@@ -3,7 +3,6 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-from routes.schools import SchoolListResource, SchoolResource
 
 
 from config import Config
@@ -162,6 +161,8 @@ api.add_resource(Home, '/api/home', endpoint='home')
 
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
+
+
 
 
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')

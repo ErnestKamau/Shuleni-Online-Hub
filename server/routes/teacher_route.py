@@ -9,4 +9,6 @@ class TeacherSchema(ma.SQLAlchemySchema):
     load_instance = True
 
     id = auto_field()
+    name = auto_field()
+
     
