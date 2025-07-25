@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 import secrets
 import string
 import json
+from models import Class, ClassMember, Assessment, Submission, Attendance
+from datetime import datetime, timedelta
 
 
 class SchoolOwnerRegister(Resource):
@@ -62,7 +64,7 @@ class AdminCreateStudent(Resource):
         current_user = json.loads(get_jwt_identity())
         
         # Only owners can create students
-        if current_user['role'] != 'owner':
+        if current_user['role'] != 'owner' :
             return {"error": "Unauthorized"}, 403
             
         data = request.get_json()
@@ -377,6 +379,105 @@ class UserProfile(Resource):
             })
         
         return profile_data, 200
+
+
+class StudentDashboard(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
+        user = User.query.get(current_user['id'])
+        if not user or user.role != 'student':
+            return {"error": "Unauthorized"}, 403
+
+        # Get student profile
+        student_profile = user.student_profile
+        if not student_profile:
+            return {"error": "Student profile not found"}, 404
+
+        # School info
+        school = School.query.get(student_profile.school_id)
+        school_data = {
+            "id": school.id,
+            "name": school.name,
+            "address": school.address
+        } if school else None
+
+        # Classes (via ClassMember)
+        class_memberships = ClassMember.query.filter_by(user_id=user.id, role_in_class='student').all()
+        class_ids = [cm.class_id for cm in class_memberships]
+        classes = Class.query.filter(Class.id.in_(class_ids)).all() if class_ids else []
+        classes_data = [
+            {"id": c.id, "name": c.name, "school_id": c.school_id} for c in classes
+        ]
+
+        # Assessments for those classes
+        assessments = Assessment.query.filter(Assessment.class_id.in_(class_ids)).all() if class_ids else []
+        assessments_data = [
+            {
+                "id": a.id,
+                "title": a.title,
+                "type": a.type,
+                "class_id": a.class_id,
+                "start_time": a.start_time.isoformat() if a.start_time else None,
+                "created_at": a.created_at.isoformat() if a.created_at else None
+            }
+            for a in assessments
+        ]
+        assessment_ids = [a.id for a in assessments]
+
+        # Submissions for those assessments
+        submissions = Submission.query.filter(
+            Submission.assessment_id.in_(assessment_ids),
+            Submission.student_id == user.id
+        ).all() if assessment_ids else []
+        submissions_data = [
+            {
+                "id": s.id,
+                "assessment_id": s.assessment_id,
+                "score": s.score,
+                "remarks": s.remarks,
+                "submitted_at": s.submitted_at.isoformat() if s.submitted_at else None
+            }
+            for s in submissions
+        ]
+
+        # Attendance summary (all records for this student)
+        attendance_records = Attendance.query.filter_by(student_id=user.id).all()
+        attendance_summary = {
+            "present": 0,
+            "absent": 0,
+            "late": 0,
+            "excused": 0,
+            "total": len(attendance_records)
+        }
+        for record in attendance_records:
+            if record.status in attendance_summary:
+                attendance_summary[record.status] += 1
+
+        # Optionally, group attendance by class
+        class_attendance = {}
+        for record in attendance_records:
+            cid = record.class_id
+            if cid not in class_attendance:
+                class_attendance[cid] = {"present": 0, "absent": 0, "late": 0, "excused": 0, "total": 0}
+            if record.status in class_attendance[cid]:
+                class_attendance[cid][record.status] += 1
+            class_attendance[cid]["total"] += 1
+
+        return {
+            "student": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "admission_number": getattr(student_profile, 'admission_number', None),
+                "grade": getattr(student_profile, 'grade', None)
+            },
+            "school": school_data,
+            "classes": classes_data,
+            "assessments": assessments_data,
+            "submissions": submissions_data,
+            "attendance_summary": attendance_summary,
+            "class_attendance": class_attendance
+        }, 200
 
 
 
