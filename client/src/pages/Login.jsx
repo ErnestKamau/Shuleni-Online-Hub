@@ -23,20 +23,24 @@ const Login = () => {
       const res = await axios.post('/login', formData);
       login(res.data, res.data.token);
       
-      // Redirect based on role
-    const userRole = res.data.role;
+      // Check if this is a first login - redirect to change password
+      if (res.data.first_login === true) {
+        navigate('/change-password?first_login=true');
+        return;
+      }
+      
+      // Redirect based on role for normal logins
+      const userRole = res.data.role;
 
-
-    if (userRole === 'owner') {
-      navigate('/owner-dashboard');
-    } else if (userRole === 'educator') {
-      navigate('/educator-dashboard');
-    } else if (userRole === 'student') {
-      navigate('/student-dashboard');
-    } else {
-      navigate('/'); // fallback or 404
-    }
-
+      if (userRole === 'owner') {
+        navigate('/owner-dashboard');
+      } else if (userRole === 'educator') {
+        navigate('/educator-dashboard');
+      } else if (userRole === 'student') {
+        navigate('/student-dashboard');
+      } else {
+        navigate('/'); // fallback or 404
+      }
 
     } catch (err) {
       alert('Login failed: Invalid credentials');

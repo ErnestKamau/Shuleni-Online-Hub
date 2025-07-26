@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { School, MapPin, FileText, Building } from 'lucide-react';
 import axios from '../api/axios';
+import Sidebar from '../components/common/Sidebar';
 
 const CreateSchool = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
@@ -10,23 +11,11 @@ const CreateSchool = ({ onSuccess }) => {
     address: ''
   });
 
-  const schoolName = "Shuleni Academy";
-  const schoolLogo = "/logo.png";
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  function DashboardRedirect(){
-    navigate('/owner-dashboard')
-  }
-
-  function EducatorRedirect(){
-    navigate('/create-educator-registration')
-  }
-
-  function StudentRedirect(){
-    navigate('/create-student-registration')
-  }
+  
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -38,7 +27,7 @@ const CreateSchool = ({ onSuccess }) => {
     try {
       const response = await axios.post('/create-school', formData, {
         withCredentials: true, // needed if using cookies for JWT
-      });
+      }); 
 
       // Capture the data returned from the server
       const { message, school_id, school_name, description, address } = response.data;
@@ -75,32 +64,7 @@ const CreateSchool = ({ onSuccess }) => {
     <div className="relative min-h-screen overflow-hidden">
       <div className="relative z-10 flex min-h-screen">
         {/* Sidebar */}
-        <aside className="w-64 bg-white bg-opacity-90 shadow-md p-6 hidden md:block">
-          <div className="flex items-center space-x-3 mb-10">
-            <img src={schoolLogo} alt="School Logo" className="w-12 h-12 rounded-full" />
-            <div>
-              <h2 className="text-xl font-bold text-gray-700">{schoolName}</h2>
-              <p className="text-sm text-gray-400">Owner</p>
-            </div>
-          </div>
-          <nav className="space-y-4">
-            <button onClick={DashboardRedirect} className="block w-full text-left px-3 py-2 rounded text-indigo-700 bg-indigo-100 font-medium">
-              Dashboard
-            </button>
-            <button onClick={StudentRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage students
-            </button>
-            <button onClick={EducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage teachers
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Reports
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Profile
-            </button>
-          </nav>
-        </aside>
+        <Sidebar />
       
 
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
