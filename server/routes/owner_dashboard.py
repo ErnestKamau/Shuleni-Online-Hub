@@ -42,7 +42,7 @@ class OwnerDashboard(Resource):
                     "name": school.name,
                     "description": school.description,
                     "address": school.address,
-                    "location": school.address,  # Using address as location for now
+                    "location": school.address,
                     "established": school.created_at.strftime("%Y") if school.created_at else "N/A",
                     "created_at": school.created_at.isoformat() if school.created_at else None,
                     "student_count": school_students,

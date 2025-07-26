@@ -27,23 +27,11 @@ import StudentGrades from './pages/StudentGrades';
 export const AppRoutes = () => {
   const { loading } = useAuth();
 
-  // 🔁 Determine dashboard route based on role
-  // const getDashboardPath = () => {
-  //   if (!user) return '/login';
-  //   switch (user.role) {
-  //     case 'owner':
-  //       return '/admin-dashboard';
-  //     case 'educator':
-  //       return '/user-profile'; // 🔁 Update if educator dashboard is added
-  //     case 'student':
-  //       return '/user-profile'; // 🔁 Update if student dashboard is added
-  //     default:
-  //       return '/unauthorized';
-  //   }
-  // };
+
+
 
   if (loading) {
-    return <div className="text-center py-20 text-xl">Loading...</div>; // ⏳ Optional: add spinner
+    return <div className="text-center py-20 text-xl">Loading...</div>;
   }
 
   return (

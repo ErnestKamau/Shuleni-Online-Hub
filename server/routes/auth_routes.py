@@ -232,12 +232,12 @@ class CreateSchool(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
-        # Check if school name already exists
+        
         existing_school = School.query.filter_by(name=data['name']).first()
         if existing_school:
             return {"error": "School name already exists"}, 409
         
-        # Create school
+       
         school = School(
             name=data['name'],
             description=data.get('description', ''),
@@ -263,7 +263,7 @@ class Login(Resource):
     """Universal login for all user types"""
     def post(self):
         data = request.get_json()
-        username = data.get('username')  # Can be email or admission_number
+        username = data.get('username')
         password = data.get('password')
         
         if not username or not password:
@@ -271,10 +271,10 @@ class Login(Resource):
         
         user = None
         
-        # Try to find user by email first (for owners and educators)
+    
         user = User.query.filter_by(email=username).first()
        
-        # If not found by email, try by admission number (for students)
+        
         if not user:
             student = Student.query.filter_by(admission_number=username).first()
             if student:
@@ -283,7 +283,7 @@ class Login(Resource):
                 user = student.user
         
         if user and user.authenticate(password):
-            # Create additional identity info based on role
+            
             identity = {
                 "id": user.id,
                 "role": user.role,
@@ -291,7 +291,7 @@ class Login(Resource):
                 "full_name": user.full_name
             }
             
-            # Add role-specific info
+            
             if user.role == 'student':
                 identity["admission_number"] = user.student_profile.admission_number
             elif user.role == 'educator':
@@ -307,7 +307,7 @@ class Login(Resource):
                 'school_id': user.school_id,
                 'email': user.email if user.role != 'student' else None,
                 'admission_number': user.student_profile.admission_number if user.role == 'student' else None,
-                'first_login': user.first_login  # Include first_login flag
+                'first_login': user.first_login 
             }, 200
         
         
