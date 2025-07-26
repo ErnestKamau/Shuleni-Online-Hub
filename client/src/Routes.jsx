@@ -22,6 +22,7 @@ import StudentClasses from './pages/StudentClasses';
 import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
+import ClassManagement from './components/classes/ClassManagement';
 
 
 export const AppRoutes = () => {
@@ -194,7 +195,20 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/school/:schoolId/class/:classId/manage"
+        element={
+          <ProtectedRoute allowedRoles={['owner', 'educator']}>
+            <ClassManagement />
+          </ProtectedRoute>
+        }
+      />
+
+
     </Routes>
   );
 };
+
+
 

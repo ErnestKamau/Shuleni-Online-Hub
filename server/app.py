@@ -37,7 +37,7 @@ from routes.owner_dashboard import OwnerDashboard
 from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
-from routes.clas_routes import ClassList,ClassById
+from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
 
 # import models
 from models import *
@@ -194,3 +194,5 @@ api.add_resource(
 )
 
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
+api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
+api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
