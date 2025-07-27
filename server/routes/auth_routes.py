@@ -351,7 +351,7 @@ class UserProfile(Resource):
     @jwt_required()
     def get(self):
         current_user = json.loads(get_jwt_identity())
-        
+       
         user = User.query.get(current_user['id'])
         if not user:
             return {"error": "User not found"}, 404
@@ -384,7 +384,7 @@ class UserProfile(Resource):
 class StudentDashboard(Resource):
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         user = User.query.get(current_user['id'])
         if not user or user.role != 'student':
             return {"error": "Unauthorized"}, 403
