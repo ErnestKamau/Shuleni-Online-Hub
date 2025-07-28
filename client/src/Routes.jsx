@@ -15,8 +15,10 @@ import OwnerPage from './pages/OwnerPage';
 import CreateSchool from './pages/CreateSchool';
 import SchoolDetails from './components/schools/SchoolDetails';
 import StudentDashboard from './components/dashboards/StudentDashboard';
+import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
+import Attendances from './pages/Attendance';
 
 
 export const AppRoutes = () => {
@@ -53,12 +55,31 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
-        
+        <Route path="/attendances" element={<Attendances />} />
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+        
+        
+
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
+      {/*mwalimu routes*/}
+      <Route path="/educator-dashboard" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorDashboard />
+        </ProtectedRoute>    
+        }
+      />
+
+      <Route path="/attendances" element={
+        <ProtectedRoute>
+          <Attendances />
+        </ProtectedRoute>
+        
+      } 
+      />
 
       {/* 🔐 Owner-only routes */}
       

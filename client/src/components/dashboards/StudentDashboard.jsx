@@ -61,9 +61,9 @@ const StudentDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
+      
       <main className="flex-1 p-8 z-10">
-        {/* Header */}
+        
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
           <p className="text-gray-600 text-lg">Welcome, <span className="font-medium">{studentName}</span></p>

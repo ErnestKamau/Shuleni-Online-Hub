@@ -38,6 +38,7 @@ from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById
+from routes.educator_dashboard import EducatorDashboard
 
 # import models
 from models import *
@@ -183,8 +184,11 @@ api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
 api.add_resource(CreateSchool, '/api/create-school', endpoint='create_school')
 api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboard')
+
 api.add_resource(ClassList, "/api/classes", endpoint="class_list")
 api.add_resource(ClassById, "/api/classes/<int:id>", endpoint="class_detail")
+api.add_resource(Attendances, "/api/attendances", endpoint="attendances_list")
+api.add_resource(AttendanceById, "/api/attendances/<int:id>", endpoint="attendance_detail")
 api.add_resource(
     AssignUserToClass,
     "/api/schools/<int:school_id>/classes/<int:class_id>/assignments",
@@ -193,3 +197,5 @@ api.add_resource(
 )
 
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
+print(" EducatorDashboard route is being registered")
+api.add_resource(EducatorDashboard, '/api/educator/dashboard')
