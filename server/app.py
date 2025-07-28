@@ -5,6 +5,7 @@ from flask_restful import Api, Resource
 from flask_migrate import Migrate
 
 
+
 from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
