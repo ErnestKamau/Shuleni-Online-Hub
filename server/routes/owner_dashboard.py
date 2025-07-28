@@ -14,14 +14,14 @@ class OwnerDashboard(Resource):
         if not current_user or not isinstance(current_user, dict):
             return {"error": "Unauthorized"}, 401
         
-        # Only owners can access owner dashboard
+        
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
             
         try:
             owner_id = current_user['id']
             
-            # Get all schools owned by this user
+            
             owned_schools = School.query.filter_by(owner_id=owner_id).all()
             
             # Serialize schools data

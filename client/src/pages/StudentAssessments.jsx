@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { FaClipboardList, FaFileDownload } from 'react-icons/fa';
 import StudentSidebar from '../components/common/StudentSidebar';
 import api from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 const typeColors = {
   assignment: 'bg-blue-100 text-blue-800',
@@ -29,6 +30,8 @@ const StudentAssessments = () => {
   const [attemptingAssessment, setAttemptingAssessment] = useState(null);
   const [answers, setAnswers] = useState({});
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchAssessments = async () => {
       try {
@@ -48,18 +51,35 @@ const StudentAssessments = () => {
     fetchAssessments();
   }, []);
 
-  // Handler to open attempt modal
-  const handleAttemptAssessment = (assessment) => {
-    setAttemptingAssessment(assessment);
-    setAnswers({});
-  };
+  
+  const handleAttemptAssessment = async (assessment) => {
+  try {
+    const res = await api.get(`/classes/${assessment.class_id}/assessments`);
+    const fullAssessment = res.data.assessments.find(
+      (a) => a.id === assessment.id
+    );
 
-  // Handler for answer change
+    if (!fullAssessment || !fullAssessment.questions || fullAssessment.questions.length === 0) {
+      alert("This assessment has no questions yet.");
+      return;
+    }
+
+    setAttemptingAssessment(fullAssessment);
+    setAnswers({});
+  } catch (err) {
+    console.error("Error fetching assessment:", err);
+    alert("Failed to load assessment details",  err);
+  }
+};
+
+
+
+
   const handleAnswerChange = (idx, value) => {
     setAnswers(prev => ({ ...prev, [idx]: value }));
   };
 
-  // Handler to submit answers
+  
   const handleSubmitAnswers = async () => {
     if (!attemptingAssessment) return;
   try {
@@ -69,20 +89,16 @@ const StudentAssessments = () => {
     });
     setAttemptingAssessment(null);
     setAnswers({});
-    // Optionally refresh assessments/submissions
   } catch (err) {
     alert('Failed to submit answers');
   }
 };
 
-
-
-  // Helper: Map classId to class name
+  
   const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
-  // Helper: Map assessmentId to submission
   const submissionMap = Object.fromEntries(submissions.map(s => [s.assessment_id, s]));
 
-  // Download CSV handler
+  
   const handleDownloadCSV = () => {
     const headers = ['Title', 'Type', 'Class', 'Due Date', 'Status', 'Score', 'Feedback', 'Submission Date'];
     const rows = assessments.map(a => {
@@ -110,7 +126,7 @@ const StudentAssessments = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-gray-100 relative">
+    <div className="min-h-screen flex bg-gray-100 relative z-0">
       <StudentSidebar schoolName={school?.name} schoolLogo={"/logo.png"} />
       <main className="flex-1 p-8 z-10">
         <h1 className="text-2xl font-bold mb-4 flex items-center gap-2">
@@ -248,7 +264,7 @@ const StudentAssessments = () => {
                         ) : (
                           <button
                             className="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600"
-                            onClick={() => handleAttemptAssessment(a)}
+                            onClick={() => navigate(`/student/assessments/${a.id}/attempt`)}
                           >
                             Attempt
                           </button>

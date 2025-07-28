@@ -216,9 +216,6 @@ class ClassById(Resource):
     
 api.add_resource(ClassById, "/classes/<int:id>")
 
-
-# --- Endpoints ---
-
 class ClassResources(Resource):
     @jwt_required()
     def get(self, class_id):
