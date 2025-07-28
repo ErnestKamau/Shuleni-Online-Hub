@@ -191,10 +191,10 @@ const SchoolDetails = () => {
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
                 <FaPlusCircle />
-                <span>Manage Classes</span>
+                <span>Add a Class to {schoolData.school.name}</span>
               </button>
             </div>
-            
+           
             {schoolData.classes.length === 0 ? (
               <div className="bg-white rounded-lg shadow p-8 text-center">
                 <FaBuilding className="mx-auto text-6xl text-gray-300 mb-4" />
@@ -205,7 +205,7 @@ const SchoolDetails = () => {
                   className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 mx-auto"
                 >
                   <FaPlusCircle />
-                  <span>Manage Classes</span>
+                  <span>Add your first Class to {schoolData.school.name}</span>
                 </button>
               </div>
             ) : (

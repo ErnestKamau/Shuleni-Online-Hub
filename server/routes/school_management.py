@@ -12,27 +12,25 @@ class SchoolDetails(Resource):
     def get(self, school_id):
         current_user = json.loads(get_jwt_identity())
         
-        # Only owners can access school details
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Check if the school belongs to the current owner
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
             
-            # Get classes for this school
+            
             classes = Class.query.filter_by(school_id=school_id).all()
             
-            # Get all students and teachers for this school
+            
             students = Student.query.filter_by(school_id=school_id).all()
             teachers = Teacher.query.filter_by(school_id=school_id).all()
             
-            # Format classes data with members
+            
             classes_data = []
             for class_ in classes:
-                # Get class members
+                # Get class members# Format classes data with members
                 members = ClassMember.query.filter_by(class_id=class_.id).all()
                 
                 class_students = []
@@ -46,15 +44,16 @@ class SchoolDetails(Resource):
                         "joined_at": member.joined_at.isoformat() if member.joined_at else None
                     }
                     
+                    
                     if member.role_in_class == 'student':
-                        # Add student-specific info
+                        
                         student_profile = Student.query.filter_by(user_id=member.user.id).first()
                         if student_profile:
                             user_data["admission_number"] = student_profile.admission_number
                             user_data["grade"] = student_profile.grade
                         class_students.append(user_data)
                     elif member.role_in_class == 'educator':
-                        # Add teacher-specific info
+                        
                         teacher_profile = Teacher.query.filter_by(user_id=member.user.id).first()
                         if teacher_profile:
                             user_data["tsc_number"] = teacher_profile.tsc_number
@@ -133,7 +132,7 @@ class ClassManagement(Resource):
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Verify school ownership
+            
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
@@ -142,12 +141,12 @@ class ClassManagement(Resource):
             if not data.get('name'):
                 return {"error": "Class name is required"}, 400
             
-            # Check if class name already exists in this school
+            
             existing_class = Class.query.filter_by(name=data['name'], school_id=school_id).first()
             if existing_class:
                 return {"error": "Class name already exists in this school"}, 409
             
-            # Create new class
+            
             new_class = Class(
                 name=data['name'],
                 school_id=school_id,
@@ -228,7 +227,7 @@ class ClassManagement(Resource):
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Verify school ownership and class existence
+            
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
@@ -259,7 +258,7 @@ class AssignUserToClass(Resource):
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Verify school ownership and class existence
+            
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404

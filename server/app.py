@@ -29,7 +29,7 @@ migrate = Migrate(app, db)
 
 
 # import routes
-from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool
+from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool, StudentDashboard
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
 from routes.schools import SchoolListResource, SchoolResource
@@ -37,7 +37,7 @@ from routes.owner_dashboard import OwnerDashboard
 from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
-from routes.clas_routes import ClassList,ClassById
+from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
 from routes.educator_dashboard import EducatorDashboard
 
 # import models
@@ -184,7 +184,7 @@ api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
 api.add_resource(CreateSchool, '/api/create-school', endpoint='create_school')
 api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboard')
-
+api.add_resource(StudentDashboard, '/api/student/dashboard', endpoint='student_dashboard')
 api.add_resource(ClassList, "/api/classes", endpoint="class_list")
 api.add_resource(ClassById, "/api/classes/<int:id>", endpoint="class_detail")
 api.add_resource(Attendances, "/api/attendances", endpoint="attendances_list")
@@ -197,5 +197,7 @@ api.add_resource(
 )
 
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
+api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
+api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
 print(" EducatorDashboard route is being registered")
 api.add_resource(EducatorDashboard, '/api/educator/dashboard')

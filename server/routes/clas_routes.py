@@ -1,15 +1,16 @@
-from flask import Flask,request,make_response, Response
+from flask import Flask,request,make_response, Response, jsonify
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
 from flask_restful import Api,Resource
 from app import app,db,api,ma
 from sqlalchemy import func, desc
-from flask import jsonify
 import csv
 import io
-from models import Class,User, ClassMember,Student 
+from models import Class,User, ClassMember,Student, Assessment, Resources
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
+from datetime import datetime, timezone
+import os
 
 migrate = Migrate(app,db)
 
@@ -34,6 +35,45 @@ class ClassSchema(ma.SQLAlchemySchema):
 
 class_schema = ClassSchema()
 classes_schema= ClassSchema(many=True)
+
+# --- Marshmallow Schemas ---
+
+class ResourceSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Resources
+        load_instance = True
+
+    id = ma.auto_field()
+    title = ma.auto_field()
+    description = ma.auto_field()
+    type = ma.auto_field()
+    file_url = ma.auto_field()
+    uploaded_by = ma.auto_field()
+    class_id = ma.auto_field()
+    created_at = ma.auto_field()
+
+resource_schema = ResourceSchema()
+resources_schema = ResourceSchema(many=True)
+
+class AssessmentSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Assessment
+        load_instance = True
+
+    id = ma.auto_field()
+    title = ma.auto_field()
+    description = ma.auto_field()
+    type = ma.auto_field()
+    class_id = ma.auto_field()
+    created_by = ma.auto_field()
+    duration_minutes = ma.auto_field()
+    start_time = ma.auto_field()
+    questions = ma.auto_field()
+    created_at = ma.auto_field()
+
+assessment_schema = AssessmentSchema()
+assessments_schema = AssessmentSchema(many=True)
+
 
 class Index2(Resource):
     def get(self):
@@ -94,10 +134,20 @@ class ClassList(Resource):
         try:
 
             data =request.get_json()
+            if not data.get('name'):
+                return {"error": "Class name is required"}, 400
+            
+            
+            existing_class = Class.query.filter_by(name=data['name'], school_id=data["school_id"]).first()
+            if existing_class:
+                return {"error": f"{data['name']} already exists in this school"}, 409
+            
+        
             new_class = Class(
                 name = data["name"],
                 school_id = data["school_id"],
-                created_by = current_user["id"]
+                created_by = current_user["id"],
+                created_at=datetime.now(timezone.utc)
             )
             db.session.add(new_class)
             db.session.commit()
@@ -165,3 +215,77 @@ class ClassById(Resource):
         return response
     
 api.add_resource(ClassById, "/classes/<int:id>")
+
+
+# --- Endpoints ---
+
+class ClassResources(Resource):
+    @jwt_required()
+    def get(self, class_id):
+        resources = Resources.query.filter_by(class_id=class_id).all()
+        return make_response({"resources": resources_schema.dump(resources)}, 200)
+
+    @jwt_required()
+    def post(self, class_id):
+        current_user = json.loads(get_jwt_identity())
+        user = User.query.get(current_user['id'])
+        if not user or user.role not in ['owner', 'educator']:
+            return {"error": "Unauthorized"}, 403
+
+        title = request.form.get('title')
+        file = request.files.get('file')
+        if not title or not file:
+            return {"error": "Title and file required"}, 400
+
+        filename = f"{datetime.now(timezone.utc).timestamp()}_{file.filename}"
+        filepath = os.path.join("uploads", filename)
+        file.save(filepath)
+        file_url = f"/uploads/{filename}"
+
+        resource = Resources(
+            title=title,
+            description=request.form.get('description', ''),
+            type='files',
+            file_url=file_url,
+            uploaded_by=user.id,
+            class_id=class_id,
+            created_at=datetime.now(timezone.utc)
+        )
+        db.session.add(resource)
+        db.session.commit()
+        return make_response({"message": "Resource uploaded", "resource": resource_schema.dump(resource)}, 201)
+
+class ClassAssessments(Resource):
+    @jwt_required()
+    def get(self, class_id):
+        assessments = Assessment.query.filter_by(class_id=class_id).all()
+        return make_response({"assessments": assessments_schema.dump(assessments)}, 200)
+
+    @jwt_required()
+    def post(self, class_id):
+        current_user = json.loads(get_jwt_identity())
+        user = User.query.get(current_user['id'])
+        if not user or user.role not in ['owner', 'educator']:
+            return {"error": "Unauthorized"}, 403
+
+        data = request.get_json()
+        title = data.get('title')
+        type_ = data.get('type')
+        questions = data.get('questions')
+        if not title or not type_ or not questions:
+            return {"error": "Title, type, and questions required"}, 400
+
+        assessment = Assessment(
+            title=title,
+            description=data.get('description', ''),
+            type=type_,
+            class_id=class_id,
+            created_by=user.id,
+            questions=questions,
+            created_at=datetime.now(timezone.utc)
+        )
+        db.session.add(assessment)
+        db.session.commit()
+        return make_response({"message": "Assessment created", "assessment": assessment_schema.dump(assessment)}, 201)
+
+

@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 import secrets
 import string
 import json
+from models import Class, ClassMember, Assessment, Submission, Attendance
+from datetime import datetime, timedelta
 
 
 class SchoolOwnerRegister(Resource):
@@ -62,7 +64,7 @@ class AdminCreateStudent(Resource):
         current_user = json.loads(get_jwt_identity())
         
         # Only owners can create students
-        if current_user['role'] != 'owner':
+        if current_user['role'] != 'owner' :
             return {"error": "Unauthorized"}, 403
             
         data = request.get_json()
@@ -230,12 +232,12 @@ class CreateSchool(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
-        # Check if school name already exists
+        
         existing_school = School.query.filter_by(name=data['name']).first()
         if existing_school:
             return {"error": "School name already exists"}, 409
         
-        # Create school
+       
         school = School(
             name=data['name'],
             description=data.get('description', ''),
@@ -261,7 +263,7 @@ class Login(Resource):
     """Universal login for all user types"""
     def post(self):
         data = request.get_json()
-        username = data.get('username')  # Can be email or admission_number
+        username = data.get('username')
         password = data.get('password')
         
         if not username or not password:
@@ -269,10 +271,10 @@ class Login(Resource):
         
         user = None
         
-        # Try to find user by email first (for owners and educators)
+    
         user = User.query.filter_by(email=username).first()
        
-        # If not found by email, try by admission number (for students)
+        
         if not user:
             student = Student.query.filter_by(admission_number=username).first()
             if student:
@@ -281,7 +283,7 @@ class Login(Resource):
                 user = student.user
         
         if user and user.authenticate(password):
-            # Create additional identity info based on role
+            
             identity = {
                 "id": user.id,
                 "role": user.role,
@@ -289,7 +291,7 @@ class Login(Resource):
                 "full_name": user.full_name
             }
             
-            # Add role-specific info
+            
             if user.role == 'student':
                 identity["admission_number"] = user.student_profile.admission_number
             elif user.role == 'educator':
@@ -305,7 +307,7 @@ class Login(Resource):
                 'school_id': user.school_id,
                 'email': user.email if user.role != 'student' else None,
                 'admission_number': user.student_profile.admission_number if user.role == 'student' else None,
-                'first_login': user.first_login  # Include first_login flag
+                'first_login': user.first_login 
             }, 200
         
         
@@ -349,7 +351,7 @@ class UserProfile(Resource):
     @jwt_required()
     def get(self):
         current_user = json.loads(get_jwt_identity())
-        
+       
         user = User.query.get(current_user['id'])
         if not user:
             return {"error": "User not found"}, 404
@@ -377,6 +379,105 @@ class UserProfile(Resource):
             })
         
         return profile_data, 200
+
+
+class StudentDashboard(Resource):
+    @jwt_required()
+    def get(self):
+        current_user = json.loads(get_jwt_identity())
+        user = User.query.get(current_user['id'])
+        if not user or user.role != 'student':
+            return {"error": "Unauthorized"}, 403
+
+        # Get student profile
+        student_profile = user.student_profile
+        if not student_profile:
+            return {"error": "Student profile not found"}, 404
+
+        # School info
+        school = School.query.get(student_profile.school_id)
+        school_data = {
+            "id": school.id,
+            "name": school.name,
+            "address": school.address
+        } if school else None
+
+        # Classes (via ClassMember)
+        class_memberships = ClassMember.query.filter_by(user_id=user.id, role_in_class='student').all()
+        class_ids = [cm.class_id for cm in class_memberships]
+        classes = Class.query.filter(Class.id.in_(class_ids)).all() if class_ids else []
+        classes_data = [
+            {"id": c.id, "name": c.name, "school_id": c.school_id} for c in classes
+        ]
+
+        # Assessments for those classes
+        assessments = Assessment.query.filter(Assessment.class_id.in_(class_ids)).all() if class_ids else []
+        assessments_data = [
+            {
+                "id": a.id,
+                "title": a.title,
+                "type": a.type,
+                "class_id": a.class_id,
+                "start_time": a.start_time.isoformat() if a.start_time else None,
+                "created_at": a.created_at.isoformat() if a.created_at else None
+            }
+            for a in assessments
+        ]
+        assessment_ids = [a.id for a in assessments]
+
+        # Submissions for those assessments
+        submissions = Submission.query.filter(
+            Submission.assessment_id.in_(assessment_ids),
+            Submission.student_id == user.id
+        ).all() if assessment_ids else []
+        submissions_data = [
+            {
+                "id": s.id,
+                "assessment_id": s.assessment_id,
+                "score": s.score,
+                "remarks": s.remarks,
+                "submitted_at": s.submitted_at.isoformat() if s.submitted_at else None
+            }
+            for s in submissions
+        ]
+
+        # Attendance summary (all records for this student)
+        attendance_records = Attendance.query.filter_by(student_id=user.id).all()
+        attendance_summary = {
+            "present": 0,
+            "absent": 0,
+            "late": 0,
+            "excused": 0,
+            "total": len(attendance_records)
+        }
+        for record in attendance_records:
+            if record.status in attendance_summary:
+                attendance_summary[record.status] += 1
+
+        # Optionally, group attendance by class
+        class_attendance = {}
+        for record in attendance_records:
+            cid = record.class_id
+            if cid not in class_attendance:
+                class_attendance[cid] = {"present": 0, "absent": 0, "late": 0, "excused": 0, "total": 0}
+            if record.status in class_attendance[cid]:
+                class_attendance[cid][record.status] += 1
+            class_attendance[cid]["total"] += 1
+
+        return {
+            "student": {
+                "id": user.id,
+                "full_name": user.full_name,
+                "admission_number": getattr(student_profile, 'admission_number', None),
+                "grade": getattr(student_profile, 'grade', None)
+            },
+            "school": school_data,
+            "classes": classes_data,
+            "assessments": assessments_data,
+            "submissions": submissions_data,
+            "attendance_summary": attendance_summary,
+            "class_attendance": class_attendance
+        }, 200
 
 
 
