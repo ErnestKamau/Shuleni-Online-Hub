@@ -117,6 +117,7 @@ class AuthResponseSchema(Schema):
     school_id = fields.Integer()
     email = fields.String(allow_none=True)
     admission_number = fields.String(allow_none=True)
+    first_login = fields.Boolean()  # Add first_login field
 
 class UserCreationResponseSchema(Schema):
     message = fields.String()

@@ -1,29 +1,27 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { User, Mail, Shield, School } from 'lucide-react';
 import axios from '../api/axios';
+import Sidebar from '../components/common/Sidebar';
+
 
 const CreateEducatorRegistration = ({ onSuccess }) => {
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const schoolIdFromQuery = queryParams.get('schoolId');
+  
   const [formData, setFormData] = useState({
     full_name: '',
     school_email: '',
     tsc_number: '',
     class_id: '',
+    school_id: schoolIdFromQuery || '',
   });
 
-  const schoolName = "Shuleni Academy";
-  const schoolLogo = "/logo.png";
 
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  function DashboardRedirect(){
-    navigate('/owner-dashboard')
-  }
-
-  function StudentCreatorRedirect(){
-    navigate('/create-student-registration')
-  }
 
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -77,32 +75,7 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
     <div className="relative min-h-screen overflow-hidden">
       <div className="relative z-10 flex min-h-screen">
         {/* Sidebar */}
-        <aside className="w-64 bg-white bg-opacity-90 shadow-md p-6 hidden md:block">
-          <div className="flex items-center space-x-3 mb-10">
-            <img src={schoolLogo} alt="School Logo" className="w-12 h-12 rounded-full" />
-            <div>
-              <h2 className="text-xl font-bold text-gray-700">{schoolName}</h2>
-              <p className="text-sm text-gray-400">Owner</p>
-            </div>
-          </div>
-          <nav className="space-y-4">
-            <button onClick={DashboardRedirect} className="block w-full text-left px-3 py-2 rounded text-blue-700 bg-blue-100 font-medium">
-              Dashboard
-            </button>
-            <button onClick={StudentCreatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage students
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage teachers
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Reports
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Profile
-            </button>
-          </nav>
-        </aside>
+        <Sidebar />
       
 
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
@@ -142,6 +115,14 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
                 type: 'text',
                 placeholder: 'Enter class ID',
               },
+              // Only show school_id field when not pre-filled from query params
+              ...(!schoolIdFromQuery ? [{
+                label: 'School ID (Required when adding from sidebar/dashboard)',
+                name: 'school_id',
+                icon: <School />,
+                type: 'number',
+                placeholder: 'Enter school ID',
+              }] : []),
             ].map(({ label, name, icon, type, placeholder }) => (
               <div key={name}>
                 <label className="block text-sm font-medium text-gray-700 mb-1">

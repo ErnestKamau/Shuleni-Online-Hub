@@ -7,6 +7,7 @@ from sqlalchemy import func, desc
 import csv
 import io
 from models import Attendance,User,Student
+from flask_jwt_extended import jwt_required
 
 
 
@@ -38,8 +39,8 @@ class AttendanceSchema(ma.SQLAlchemySchema):
 
     url = ma.Hyperlinks(
         {
-            "self":ma.URLFor("attendancebyid", values= dict(id="<id>")),
-            "collection":ma.URLFor("attendances"),
+            "self":ma.URLFor("attendance_detail", values= dict(id="<id>")),
+            "collection":ma.URLFor("attendances_list"),
         }
     )
 
@@ -61,7 +62,7 @@ class Index(Resource):
         )
         return response
     
-api.add_resource(Index, '/')
+
 
 class Attendances(Resource):
     def get(self):
@@ -187,7 +188,7 @@ class Attendances(Resource):
         except Exception as e:
             return make_response({"error": str(e)}, 500)
             
-api.add_resource(Attendances, "/attendances")
+#api.add_resource(Attendances, "/attendances")
 
 class AttendanceById(Resource):
     def get(self,id):
@@ -236,5 +237,5 @@ class AttendanceById(Resource):
         return response
     
 
-api.add_resource(AttendanceById ,"/attendances/<int:id>" )
+#api.add_resource(AttendanceById ,"/attendances/<int:id>" )
     
