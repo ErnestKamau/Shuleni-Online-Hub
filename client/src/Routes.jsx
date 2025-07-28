@@ -16,10 +16,7 @@ import CreateSchool from './pages/CreateSchool';
 import SchoolDetails from './components/schools/SchoolDetails';
 import StudentDashboard from './components/dashboards/StudentDashboard';
 import EducatorDashboard from './components/dashboards/EducatorDashboard';
-<<<<<<< HEAD
-=======
 import ClassSection from './pages/ClassSection';
->>>>>>> f23197ab2b89074383e03fea86843e0875e0841a
 import useAuth from './hooks/useAuth';
 import StudentClasses from './pages/StudentClasses';
 import StudentAssessments from './pages/StudentAssessments';
@@ -54,17 +51,9 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-<<<<<<< HEAD
-        <Route path="/student-dashboard" element={<StudentDashboard />} />
-        <Route path="/educator-dashboard" element={<EducatorDashboard />} />
-        
 
-        
-
-
-=======
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
->>>>>>> f23197ab2b89074383e03fea86843e0875e0841a
+
       </Route>
 
       {/* 🔐 Owner-only routes */}
