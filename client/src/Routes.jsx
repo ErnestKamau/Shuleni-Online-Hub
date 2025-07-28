@@ -58,6 +58,9 @@ export const AppRoutes = () => {
         <Route path="/educator-dashboard" element={<EducatorDashboard />} />
         
 
+        
+
+
       </Route>
 
       {/* 🔐 Owner-only routes */}

@@ -10,6 +10,9 @@ from models import Attendance,User,Student
 
 
 
+
+
+
 migrate = Migrate(app,db)
 
 class AttendanceSchema(ma.SQLAlchemySchema):

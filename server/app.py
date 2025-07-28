@@ -3,7 +3,7 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-from routes.schools import SchoolListResource, SchoolResour
+from routes.schools import SchoolListResource, SchoolResource
 
 
 from config import Config
