@@ -209,12 +209,7 @@ const UserProfile = () => {
             </div>
           )}
 
-          {/* Optional: Call to Action */}
-          {/* <div className="mt-12 text-center">
-            <button className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-300">
-              Update Profile
-            </button>
-          </div> */}
+      
 
         </div>
       </div>
