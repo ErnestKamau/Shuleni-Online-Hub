@@ -36,7 +36,6 @@ class ClassSchema(ma.SQLAlchemySchema):
 class_schema = ClassSchema()
 classes_schema= ClassSchema(many=True)
 
-# --- Marshmallow Schemas ---
 
 class ResourceSchema(ma.SQLAlchemySchema):
     class Meta:
