@@ -189,6 +189,15 @@ export const AppRoutes = () => {
         }
       />
 
+      <Route
+      path="/student/assessments/:assessmentId/attempt"
+      element={
+      <ProtectedRoute allowedRoles={['student']}>
+        <AttemptAssessmentPage />
+      </ProtectedRoute>
+      }
+      />
+
 
 
       {/* 🔐 Shared routes: owner, educator, student */}

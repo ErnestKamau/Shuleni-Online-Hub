@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { User, Mail, Shield, School } from 'lucide-react';
 import axios from '../api/axios';
 import Sidebar from '../components/common/Sidebar';
+import downloadOnboardingDoc from '../components/common/ downloadOnboardingDoc';
 
 
 const CreateEducatorRegistration = ({ onSuccess }) => {
@@ -43,10 +44,18 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
       // Capture the data returned from the server
       const { message, school_email, temporary_password, teacher_id } = response.data;
       
-      // Display the important information to the user
-      alert(`${message}\n\nSchool Email: ${school_email}\nTemporary Password: ${temporary_password}\nTeacher ID: ${teacher_id}`);
+      downloadOnboardingDoc({
+        title: "Educator Onboarding",
+        welcomeMessage:"Welcome to Shuleni! We are excited to have you join our school community. Here you will find all the resources, support, and opportunities you need to succeed. Please review your login details below and reach out if you need any assistance.",
+        info: [
+          `Full Name: ${formData.full_name}`,
+          `School Email: ${school_email}`,
+          `Temporary Password: ${temporary_password}`,
+          // `Teacher ID: ${teacher_id}`,
+          // `Class ID: ${formData.class_id || 'N/A'}`
+        ]
+      });
       
-      // You could also store this data in state if you want to display it in the UI
       console.log('Educator created:', {
         message,
         school_email,

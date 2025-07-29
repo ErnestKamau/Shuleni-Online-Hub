@@ -3,6 +3,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { User, Hash, BookOpen, School } from 'lucide-react';
 import axios from '../api/axios';
 import Sidebar from '../components/common/Sidebar';
+import downloadOnboardingDoc from '../components/common/ downloadOnboardingDoc';
+
 
 const CreateStudentRegistration = ({ onSuccess }) => {
   const location = useLocation();
@@ -44,13 +46,23 @@ const CreateStudentRegistration = ({ onSuccess }) => {
         withCredentials: true, // needed if using cookies for JWT
       });
 
-      // Capture the data returned from the server
+      
       const { message, admission_number, temporary_password, student_id } = response.data;
       
-      // Display the important information to the user
-      alert(`${message}\n\nAdmission Number: ${admission_number}\nTemporary Password: ${temporary_password}\nStudent ID: ${student_id}`);
+      downloadOnboardingDoc({
+        title: "Student Onboarding",
+        welcomeMessage:"Welcome to Shuleni! We are excited to have you join our school community. Here you will find all the resources, support, and opportunities you need to succeed. Please review your login details below and reach out if you need any assistance.",
+        info: [
+          `Full Name: ${formData.full_name}`,
+          `Admission Number: ${admission_number}`,
+          `Temporary Password: ${temporary_password}`,
+          `Student ID: ${student_id}`,
+          // `Grade: ${formData.grade || 'N/A'}`,
+          // `Class ID: ${formData.class_id || 'N/A'}`
+        ]
+      });
       
-      // You could also store this data in state if you want to display it in the UI
+      
       console.log('Student created:', {
         message,
         admission_number,

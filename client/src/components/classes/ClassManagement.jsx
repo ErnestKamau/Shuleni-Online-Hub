@@ -398,13 +398,12 @@ const ClassManagement = () => {
                 <option value="exam">Exam</option>
                 <option value="cats">CATS</option>
               </select>
-              <input
-                type="text"
-                placeholder="Questions (JSON or text)"
-                value={assessmentQuestions}
-                onChange={e => setAssessmentQuestions(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2"
-                required
+              <textarea
+              rows={6}
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={assessmentQuestions}
+              onChange={e => setAssessmentQuestions(e.target.value)}
+              placeholder="Type each question on a new line..."
               />
               <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
                 Add

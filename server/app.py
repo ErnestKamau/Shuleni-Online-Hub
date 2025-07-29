@@ -38,6 +38,7 @@ from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
+from routes.assessment_routes import AssessmentById
 
 # import models
 from models import *
@@ -196,5 +197,6 @@ api.add_resource(
 )
 
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
-api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
-api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
+api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources", endpoint="class_resources")
+api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments", endpoint="class_assessments")
+api.add_resource(AssessmentById, "/api/assessments/<int:id>", endpoint="assessment_by_id")

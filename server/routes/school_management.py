@@ -287,13 +287,13 @@ class AssignUserToClass(Resource):
             
             for user_id in user_ids:
                 try:
-                    # Verify user exists and belongs to the school
+                   
                     user = User.query.filter_by(id=user_id, school_id=school_id).first()
                     if not user:
                         errors.append(f"User {user_id} not found in this school")
                         continue
                     
-                    # Check if user role matches assignment role
+                    
                     if role == 'student' and user.role != 'student':
                         errors.append(f"User {user.full_name} is not a student")
                         continue
@@ -350,7 +350,6 @@ class AssignUserToClass(Resource):
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Verify school ownership and class existence
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
@@ -374,7 +373,7 @@ class AssignUserToClass(Resource):
                         class_id=class_id,
                         user_id=user_id
                     ).first()
-                    
+                   
                     if assignment:
                         db.session.delete(assignment)
                         removed_count += 1
