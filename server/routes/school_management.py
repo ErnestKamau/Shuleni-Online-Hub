@@ -266,12 +266,12 @@ class AssignUserToClass(Resource):
             
             data = request.get_json()
             user_ids = data.get('user_ids', [])
-            role = data.get('role')  # 'student' or 'educator'
+            role = data.get('role') 
 
-            print("🔥 Received POST to /assignments")
-            print("➡️ Raw data:", data)
-            print("🧍 user_ids:", user_ids, "🧾 type:", type(user_ids))
-            print("🎭 role:", role)
+            print("Received POST to /assignments")
+            print("Raw data:", data)
+            print("user_ids:", user_ids, " type:", type(user_ids))
+            print("role:", role)
             
             if not user_ids or not role:
                 return {"error": "user_ids and role are required"}, 400
