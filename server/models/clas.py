@@ -3,8 +3,7 @@ from extensions import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
 from sqlalchemy import and_
-# models/clas.py
-from .class_member import ClassMember  # <- move this to top if it's below
+from .class_member import ClassMember  
 from .user import User
 from sqlalchemy.orm import foreign
 
@@ -27,22 +26,7 @@ class Class(db.Model, SerializerMixin):
     attendance_records = db.relationship('Attendance', back_populates='class_', cascade='all, delete-orphan')
     messages = db.relationship('Chat', back_populates='class_', cascade='all, delete-orphan')
     students = db.relationship("Student", back_populates="class_", cascade='all, delete-orphan')
-    #
-
-    #teachers = db.relationship(
-    #"User",
-    #secondary=ClassMember.__table__,
-    ##primaryjoin=lambda: Class.id == foreign(ClassMember.class_id),
-    #secondaryjoin=lambda: and_(
-    #    foreign(ClassMember.user_id) == User.id,
-    #    ClassMember.role_in_class == 'educator'
-    #),
-    #viewonly=True
-#)
-
-
-
-
+   
 
 
     serialize_rules = ('-school.classes', '-members.class_', '-resources.class_', '-assessments.class_', '-attendance_records.class_', '-messages.class_',)

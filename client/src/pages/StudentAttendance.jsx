@@ -46,7 +46,6 @@ const StudentAttendance = () => {
     fetchAttendance();
   }, []);
 
-  // Download CSV handler
   const handleDownloadCSV = () => {
     const headers = ['Class', 'Present', 'Absent', 'Late', 'Excused', 'Total'];
     const rows = classes.map(c => ({

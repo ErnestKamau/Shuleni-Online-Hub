@@ -188,7 +188,7 @@ class Attendances(Resource):
         except Exception as e:
             return make_response({"error": str(e)}, 500)
             
-#api.add_resource(Attendances, "/attendances")
+
 
 class AttendanceById(Resource):
     def get(self,id):
@@ -237,5 +237,4 @@ class AttendanceById(Resource):
         return response
     
 
-#api.add_resource(AttendanceById ,"/attendances/<int:id>" )
-    
+

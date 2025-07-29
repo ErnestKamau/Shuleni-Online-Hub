@@ -30,7 +30,7 @@ class SchoolDetails(Resource):
             
             classes_data = []
             for class_ in classes:
-                # Get class members# Format classes data with members
+              
                 members = ClassMember.query.filter_by(class_id=class_.id).all()
                 
                 class_students = []
@@ -70,7 +70,7 @@ class SchoolDetails(Resource):
                 }
                 classes_data.append(class_data)
             
-            # Get unassigned students and teachers
+            
             assigned_user_ids = set()
             for class_ in classes:
                 members = ClassMember.query.filter_by(class_id=class_.id).all()
@@ -180,7 +180,6 @@ class ClassManagement(Resource):
             return {"error": "Unauthorized"}, 403
             
         try:
-            # Verify school ownership and class existence
             school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
@@ -193,7 +192,7 @@ class ClassManagement(Resource):
             if not data.get('name'):
                 return {"error": "Class name is required"}, 400
             
-            # Check if new name conflicts with existing classes (excluding current class)
+        
             existing_class = Class.query.filter(
                 Class.name == data['name'],
                 Class.school_id == school_id,
@@ -269,7 +268,7 @@ class AssignUserToClass(Resource):
             
             data = request.get_json()
             user_ids = data.get('user_ids', [])
-            role = data.get('role')  # 'student' or 'educator'
+            role = data.get('role') 
 
             print("🔥 Received POST to /assignments")
             print("➡️ Raw data:", data)
@@ -301,7 +300,7 @@ class AssignUserToClass(Resource):
                         errors.append(f"User {user.full_name} is not an educator")
                         continue
                     
-                    # Check if user is already assigned to this class
+
                     existing_assignment = ClassMember.query.filter_by(
                         class_id=class_id, 
                         user_id=user_id
@@ -310,7 +309,7 @@ class AssignUserToClass(Resource):
                         errors.append(f"User {user.full_name} is already assigned to this class")
                         continue
                     
-                    # Create assignment
+                   
                     assignment = ClassMember(
                         class_id=class_id,
                         user_id=user_id,

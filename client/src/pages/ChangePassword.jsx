@@ -24,7 +24,6 @@ const ChangePassword = () => {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    // Check if this is a first login redirect
     setIsFirstLogin(searchParams.get('first_login') === 'true');
   }, [searchParams]);
 
@@ -32,7 +31,6 @@ const ChangePassword = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear errors when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -90,7 +88,6 @@ const ChangePassword = () => {
       // Clear form
       setFormData({ old_password: '', new_password: '', confirm_password: '' });
       
-      // Redirect based on user role after successful password change
       if (user?.role === 'owner') {
         navigate('/owner-dashboard');
       } else if (user?.role === 'educator') {
@@ -126,7 +123,6 @@ const ChangePassword = () => {
         navigate('/login');
       }
     } else {
-      // For normal password change, go back to profile
       navigate('/user-profile');
     }
   };
@@ -153,7 +149,6 @@ const ChangePassword = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Current Password */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               {isFirstLogin ? 'Temporary Password' : 'Current Password'}
@@ -186,7 +181,7 @@ const ChangePassword = () => {
             )}
           </div>
 
-          {/* New Password */}
+        
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               New Password
@@ -219,7 +214,7 @@ const ChangePassword = () => {
             )}
           </div>
 
-          {/* Confirm Password */}
+          
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Confirm New Password
@@ -252,8 +247,7 @@ const ChangePassword = () => {
             )}
           </div>
 
-          {/* Password Requirements */}
-          <div className="bg-gray-50 p-3 rounded-md">
+                  <div className="bg-gray-50 p-3 rounded-md">
             <p className="text-xs text-gray-600 font-medium mb-1">Password Requirements:</p>
             <ul className="text-xs text-gray-500 space-y-1">
               <li>• At least 6 characters long</li>
@@ -262,7 +256,7 @@ const ChangePassword = () => {
             </ul>
           </div>
 
-          {/* Action Buttons */}
+          \
           <div className="flex gap-3 pt-2">
             <button
               type="submit"

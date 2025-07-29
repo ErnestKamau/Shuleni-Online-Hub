@@ -18,7 +18,6 @@ class Student(db.Model, SerializerMixin):
     user = db.relationship("User", back_populates="student_profile", uselist=False)
     class_ = db.relationship("Class", back_populates="students") 
     school = db.relationship("School", back_populates="students") 
-    #added it right now not sure#class_assigned = db.relationship("Class", back_populates="students")  # or whatever the model is
 
 
     def __repr__(self):

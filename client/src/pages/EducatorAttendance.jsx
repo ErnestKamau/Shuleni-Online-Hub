@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 export default function EducatorAttendance() {
-  // Mock data for students
-  // Updated to include 'Late' and 'Excused' statuses for demonstration.
+
   const initialStudents = [
     { id: 's1', name: 'Alice Johnson', email: 'alice@school.com', status: 'Present' },
     { id: 's2', name: 'Bob Smith', email: 'bob@school.com', status: 'Absent' },
@@ -22,8 +21,6 @@ export default function EducatorAttendance() {
   const [unsavedChanges, setUnsavedChanges] = useState(false);
   const [showBulkActionMessage, setShowBulkActionMessage] = useState(false);
   const [bulkActionMessage, setBulkActionMessage] = useState('');
-
-  // Calculate attendance summary based on current student statuses
   const presentCount = students.filter(s => s.status === 'Present').length;
   const absentCount = students.filter(s => s.status === 'Absent').length;
   const lateCount = students.filter(s => s.status === 'Late').length;
@@ -32,14 +29,11 @@ export default function EducatorAttendance() {
   const attendanceRate = totalStudents > 0 ? ((presentCount / totalStudents) * 100).toFixed(0) : 0;
   const pendingCount = totalStudents - (presentCount + absentCount + lateCount + excusedCount);
 
-  // Filter students based on search term for dynamic display
+ 
   const filteredStudents = students.filter(student =>
     student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     student.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Handle individual student attendance toggle
-  // Cycles through 'Present' -> 'Absent' -> 'Late' -> 'Excused' -> 'Present'
   const toggleAttendance = (id) => {
     setStudents(prevStudents =>
       prevStudents.map(student => {
@@ -59,34 +53,31 @@ export default function EducatorAttendance() {
               newStatus = 'Present';
               break;
             default:
-              newStatus = 'Present'; // Default to Present if status is undefined
+              newStatus = 'Present'; 
           }
           return { ...student, status: newStatus };
         }
         return student;
       })
     );
-    setUnsavedChanges(true); // Indicate that changes have been made
+    setUnsavedChanges(true); 
   };
 
-  // Handle bulk attendance action for all students
   const handleBulkAction = (status) => {
     setStudents(prevStudents =>
       prevStudents.map(student => ({ ...student, status }))
     );
-    setUnsavedChanges(true); // Indicate changes
+    setUnsavedChanges(true); 
     setBulkActionMessage(`All students marked as ${status.toLowerCase()}`);
     setShowBulkActionMessage(true);
-    setTimeout(() => setShowBulkActionMessage(false), 3000); // Hide message after 3 seconds
+    setTimeout(() => setShowBulkActionMessage(false), 3000); 
   };
 
-  // Reset all changes to the initial mock state
   const handleReset = () => {
     setStudents(initialStudents);
-    setUnsavedChanges(false); // No unsaved changes after reset
+    setUnsavedChanges(false); 
   };
 
-  // Mock function to save attendance data
   const handleSaveAttendance = () => {
     console.log("Saving attendance:", students);
     setUnsavedChanges(false); 
@@ -128,7 +119,7 @@ export default function EducatorAttendance() {
         };
       case 'Excused':
         return {
-          className: 'bg-blue-100 text-blue-700 hover:bg-blue-200', // Using blue for excused to differentiate from other colors
+          className: 'bg-blue-100 text-blue-700 hover:bg-blue-200', 
           icon: (
             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -151,7 +142,6 @@ export default function EducatorAttendance() {
 
   return (
     <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen font-inter">
-      {/* Header Section */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
           <div className="flex items-center mb-4 md:mb-0">
@@ -182,10 +172,8 @@ export default function EducatorAttendance() {
         <p className="text-gray-500 text-base">Introduction to Programming</p>
       </div>
 
-      {/* Attendance Controls and Summary */}
       <div className="bg-white rounded-xl shadow-lg p-6 mb-6 border border-gray-100">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Date Picker */}
           <div>
             <label htmlFor="attendance-date" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -201,7 +189,7 @@ export default function EducatorAttendance() {
               onChange={(e) => setAttendanceDate(e.target.value)}
             />
           </div>
-          {/* Search Students */}
+          
           <div>
             <label htmlFor="search-students" className="block text-sm font-semibold text-gray-700 mb-2 flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -220,7 +208,7 @@ export default function EducatorAttendance() {
           </div>
         </div>
 
-        {/* Attendance Summary Cards */}
+        
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
           <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex flex-col items-center justify-center shadow-sm">
             <p className="text-3xl font-bold text-green-700">{presentCount}</p>
@@ -240,7 +228,7 @@ export default function EducatorAttendance() {
           </div>
         </div>
 
-        {/* Overall Statistics and Quick Actions */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
           <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100 flex flex-col justify-between">
             <p className="text-md font-semibold text-gray-800 mb-3">Overall Statistics</p>
@@ -322,7 +310,7 @@ export default function EducatorAttendance() {
         </div>
       </div>
 
-      {/* Student List Section */}
+     
       <div className="bg-white rounded-xl shadow-lg p-6 relative border border-gray-100">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
           <h2 className="text-2xl font-bold text-gray-900 mb-3 sm:mb-0">Student List</h2>
@@ -356,14 +344,14 @@ export default function EducatorAttendance() {
           </div>
         </div>
 
-        {/* Bulk action message */}
+    
         {showBulkActionMessage && (
           <div className="absolute top-4 right-4 bg-gray-800 text-white text-sm px-4 py-2 rounded-md shadow-lg transition-opacity duration-300 ease-in-out opacity-100 z-10">
             {bulkActionMessage}
           </div>
         )}
 
-        {/* Student Cards Grid */}
+     
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {filteredStudents.map(student => {
             

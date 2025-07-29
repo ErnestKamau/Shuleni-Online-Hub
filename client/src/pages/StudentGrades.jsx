@@ -46,12 +46,11 @@ const StudentGrades = () => {
     fetchGrades();
   }, []);
 
-  // Helper: Map classId to class name
+  
   const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
-  // Helper: Map assessmentId to submission
   const submissionMap = Object.fromEntries(submissions.map(s => [s.assessment_id, s]));
 
-  // Calculate average score per assessment type
+  
   const typeScores = {};
   assessments.forEach(a => {
     const submission = submissionMap[a.id];
@@ -64,7 +63,7 @@ const StudentGrades = () => {
     Object.entries(typeScores).map(([type, scores]) => [type, (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2)])
   );
 
-  // Download CSV handler
+  
   const handleDownloadCSV = () => {
     const headers = ['Title', 'Type', 'Class', 'Score', 'Feedback'];
     const rows = assessments.map(a => {

@@ -38,5 +38,3 @@ class AssessmentById(Resource):
         db.session.commit()
         return make_response({"message": "Submission saved"}, 201)
 
-# In app.py
-# api.add_resource(AssessmentById, "/api/assessments/<int:id>")

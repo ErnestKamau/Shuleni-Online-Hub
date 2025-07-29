@@ -21,7 +21,6 @@ const CreateStudentRegistration = ({ onSuccess }) => {
 
   
   const [isLoading, setIsLoading] = useState(false);
-  // const [studentCreated, setStudentCreated] = useState(null)
   const navigate = useNavigate();
 
 
@@ -43,7 +42,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
 
     try {
       const response = await axios.post('/admin/create-student', cleanFormData, {
-        withCredentials: true, // needed if using cookies for JWT
+        withCredentials: true, 
       });
 
       
@@ -57,8 +56,6 @@ const CreateStudentRegistration = ({ onSuccess }) => {
           `Admission Number: ${admission_number}`,
           `Temporary Password: ${temporary_password}`,
           `Student ID: ${student_id}`,
-          // `Grade: ${formData.grade || 'N/A'}`,
-          // `Class ID: ${formData.class_id || 'N/A'}`
         ]
       });
       
@@ -90,11 +87,9 @@ const CreateStudentRegistration = ({ onSuccess }) => {
 
   return (
     <div className="relative min-h-screen overflow-hidden">
-      {/* <AdminNavbar /> */}
       <div className="relative z-10 flex min-h-screen">
-        {/* Sidebar */}
+  
         <Sidebar />
-     
 
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">
@@ -133,7 +128,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
                 type: 'text',
                 placeholder: 'Enter class ID',
               },
-              // Only show school_id field when not pre-filled from query params
+
               ...(!schoolIdFromQuery ? [{
                 label: 'School ID (Required when adding from sidebar/dashboard)',
                 name: 'school_id',

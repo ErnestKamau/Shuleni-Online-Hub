@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from "../api/axios";
 
-// Using a simple icon from a widely available source (like Heroicons for Tailwind CSS users)
-// If you don't have Heroicons set up, you might need to install them or replace with your icon solution
+
 const UserIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-blue-500">
     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -109,7 +108,7 @@ const UserProfile = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-8 font-sans">
       <div className="bg-white rounded-3xl shadow-3xl overflow-hidden w-full max-w-3xl transform hover:scale-[1.01] transition-transform duration-500 ease-out animate-fade-in">
 
-        {/* Header Section */}
+       
         <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 text-white p-8 text-center">
           <h2 className="text-4xl font-extrabold mb-2 tracking-wide drop-shadow-lg">
             Shuleni Profile
@@ -117,7 +116,7 @@ const UserProfile = () => {
           <p className="text-xl opacity-90 font-light italic">
             Your gateway to educational excellence
           </p>
-          {/* Avatar Placeholder */}
+          
           <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2">
             <div className="w-36 h-36 bg-white rounded-full flex items-center justify-center shadow-lg border-4 border-white overflow-hidden">
                 <img
@@ -129,14 +128,12 @@ const UserProfile = () => {
           </div>
         </div>
 
-        {/* Profile Details Section */}
         <div className="pt-24 pb-10 px-8 lg:px-12">
           <h3 className="text-3xl font-bold text-gray-900 text-center mb-10">
             {profile.full_name}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8 mb-10">
-            {/* Common Details */}
             <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg shadow-sm">
               <UserIcon />
               <div>
@@ -173,7 +170,6 @@ const UserProfile = () => {
             </div>
           </div>
 
-          {/* Role-Specific Details */}
           {profile.role === 'student' && (
             <div className="bg-blue-50 border border-blue-200 p-6 rounded-lg shadow-inner-md transition duration-300 hover:shadow-md">
               <h4 className="text-2xl font-bold text-blue-800 mb-5 text-center">Student Information</h4>

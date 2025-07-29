@@ -276,7 +276,7 @@ class ClassAssessments(Resource):
         if not title or not type_ or not questions_input:
             return {"error": "Title, type, and questions required"}, 400
 
-        # Parse questions
+       
         questions = parse_questions(questions_input)
 
         assessment = Assessment(
@@ -301,14 +301,12 @@ def parse_questions(questions_input):
         return questions_input
     
     if isinstance(questions_input, str):
-        # Try to parse as JSON first
         try:
             parsed = json.loads(questions_input)
             if isinstance(parsed, list):
                 return parsed
         except Exception:
             pass
-        # Otherwise, treat as plain text: one question per line
         lines = [q.strip() for q in questions_input.split('\n') if q.strip()]
         return [{"question": line} for line in lines]
     return []
