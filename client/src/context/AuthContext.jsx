@@ -8,7 +8,7 @@ const TOKEN_KEY = 'token';
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true); // optional: helps delay render until auth loaded
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem(USER_KEY);
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
     }
-    setLoading(false); // ✅ Mark auth loading complete
+    setLoading(false);
   }, []);
 
   const login = (userData, authToken) => {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         refreshAuth,
-        loading, // optional: expose loading state
+        loading,
       }}
     >
       {children}

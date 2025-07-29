@@ -373,7 +373,7 @@ class AssignUserToClass(Resource):
                         class_id=class_id,
                         user_id=user_id
                     ).first()
-                    
+                   
                     if assignment:
                         db.session.delete(assignment)
                         removed_count += 1
