@@ -19,6 +19,7 @@ import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 import StudentClasses from './pages/StudentClasses';
+import EducatorClassManagement from './components/classes/EducatorClassManagement';
 import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
@@ -140,6 +141,15 @@ export const AppRoutes = () => {
         element={
           <ProtectedRoute allowedRoles={['educator']}>
             <EducatorDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/educator-dashboard/class"
+        element={
+          <ProtectedRoute allowedRoles={['educator']}>
+            <EducatorClassManagement />
           </ProtectedRoute>
         }
       />

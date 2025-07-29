@@ -10,6 +10,7 @@ class EducatorDashboard(Resource):
     @jwt_required()
     def get(self):
         current_user = json.loads(get_jwt_identity())
+        school_id = current_user["school_id"]
 
         if not current_user or not isinstance(current_user, dict):
             return  {"error":"unauthorised"}, 401
@@ -60,13 +61,17 @@ class EducatorDashboard(Resource):
                     "full_name": current_user.get("full_name", "Educator"),
                     "school": {
                         "name": school.name if school else "Unknown",
-                        "logo": "/logo.png"
+                        "logo": "/logo.png",
+                        
                     }
                 },
                 "stats": {
                     "classes": num_classes,
                     "uploads": num_uploads
                 },
+                "schoolId" :school.id,
+                "classIds" : [m.class_id for m in class_memberships],
+
                 "recent_resources": recent_resources
             }, 200
 

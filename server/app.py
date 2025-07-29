@@ -3,7 +3,10 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from flask_socketio import SocketIO
 from routes.schools import SchoolListResource, SchoolResource
+
+
 
 
 from config import Config
@@ -16,6 +19,7 @@ from extensions import db, ma, jwt, bcrypt, cors
 
 app = Flask(__name__)
 app.config.from_object(Config)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 # Initialize extensions with app
 db.init_app(app)
@@ -39,6 +43,9 @@ from routes.school_management import SchoolDetails, AssignUserToClass
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
 from routes.educator_dashboard import EducatorDashboard
+from routes.chat import ChatListResource, ChatResource, ChatExportResource
+# Register real-time chat socket handlers
+from routes import chat_socket
 
 # import models
 from models import *
@@ -201,3 +208,8 @@ api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
 api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
 print(" EducatorDashboard route is being registered")
 api.add_resource(EducatorDashboard, '/api/educator/dashboard')
+
+
+api.add_resource(ChatListResource, "/api/chats", endpoint="chatlistresource")
+api.add_resource(ChatResource, "/api/chats/<int:chat_id>", endpoint="chatresource")
+api.add_resource(ChatExportResource, "/api/chats/export", endpoint="chatexportresource")
