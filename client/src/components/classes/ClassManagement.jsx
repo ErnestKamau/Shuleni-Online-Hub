@@ -27,22 +27,25 @@ const ClassManagement = () => {
     fetchClassData();
   }, [schoolId, classId]);
 
+  
+
+
+
   const fetchClassData = async () => {
     setLoading(true);
     try {
-      // Get school details (for unassigned users)
       const schoolRes = await api.get(`/schools/${schoolId}/details`);
       setSchoolData(schoolRes.data);
 
-      // Find current class
+      // current class
       const currentClass = schoolRes.data.classes.find(c => c.id === parseInt(classId));
       setClassData(currentClass);
 
-      // Fetch resources for this class
+      // resources for this class
       const resRes = await api.get(`/classes/${classId}/resources`);
       setResources(resRes.data.resources || []);
 
-      // Fetch assessments for this class
+      // assessments for this class
       const assRes = await api.get(`/classes/${classId}/assessments`);
       setAssessments(assRes.data.assessments || []);
 
@@ -54,7 +57,7 @@ const ClassManagement = () => {
     }
   };
 
-  // Assign users to class
+  
   const handleAssignUsers = async (userIds, role) => {
     if (!classData || userIds.length === 0) return;
     try {
@@ -71,7 +74,7 @@ const ClassManagement = () => {
     }
   };
 
-  // Remove user from class
+  
   const handleRemoveUser = async (userId) => {
     try {
       await api.delete(`/schools/${schoolId}/classes/${classId}/assignments`, {
@@ -79,12 +82,13 @@ const ClassManagement = () => {
       });
       setSuccessMessage('User removed from class');
       await fetchClassData();
+      console.log('User removed:', userId);
     } catch (err) {
       setError(err.message || 'Failed to remove user');
     }
   };
 
-  // Add resource to class
+  
   const handleAddResource = async (e) => {
     e.preventDefault();
     if (!resourceTitle || !resourceFile) {
@@ -108,7 +112,7 @@ const ClassManagement = () => {
     }
   };
 
-  // Add assessment to class
+  
   const handleAddAssessment = async (e) => {
     e.preventDefault();
     if (!assessmentTitle || !assessmentQuestions) {
@@ -131,7 +135,6 @@ const ClassManagement = () => {
     }
   };
 
-  // Selection helpers
   const toggleStudentSelection = (studentId) => {
     const newSelected = new Set(selectedStudents);
     newSelected.has(studentId) ? newSelected.delete(studentId) : newSelected.add(studentId);
@@ -398,13 +401,12 @@ const ClassManagement = () => {
                 <option value="exam">Exam</option>
                 <option value="cats">CATS</option>
               </select>
-              <input
-                type="text"
-                placeholder="Questions (JSON or text)"
-                value={assessmentQuestions}
-                onChange={e => setAssessmentQuestions(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2"
-                required
+              <textarea
+              rows={6}
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={assessmentQuestions}
+              onChange={e => setAssessmentQuestions(e.target.value)}
+              placeholder="Type each question on a new line..."
               />
               <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
                 Add
@@ -428,7 +430,6 @@ const ClassManagement = () => {
             </h3>
             <button
               onClick={() => {
-                // Simple CSV export
                 const headers = ['Full Name', 'Admission/TSC', 'Role'];
                 const rows = [
                   ...(classData?.students || []).map(s => [s.full_name, s.admission_number, 'Student']),

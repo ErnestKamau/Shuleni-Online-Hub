@@ -14,23 +14,23 @@ class OwnerDashboard(Resource):
         if not current_user or not isinstance(current_user, dict):
             return {"error": "Unauthorized"}, 401
         
-        # Only owners can access owner dashboard
+        
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
             
         try:
             owner_id = current_user['id']
             
-            # Get all schools owned by this user
+            
             owned_schools = School.query.filter_by(owner_id=owner_id).all()
             
-            # Serialize schools data
+            
             schools_data = []
             total_students = 0
             total_teachers = 0
             
             for school in owned_schools:
-                # Count students and teachers for this school
+                
                 school_students = Student.query.filter_by(school_id=school.id).count()
                 school_teachers = Teacher.query.filter_by(school_id=school.id).count()
                 
@@ -50,10 +50,10 @@ class OwnerDashboard(Resource):
                 }
                 schools_data.append(school_data)
             
-            # Get recent additions (last 30 days) across all owned schools
+            
             thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
             
-            # Get school IDs for owned schools
+            
             school_ids = [school.id for school in owned_schools]
             
             recent_students = 0
@@ -70,7 +70,7 @@ class OwnerDashboard(Resource):
                     Teacher.created_at >= thirty_days_ago
                 ).count()
             
-            # Get owner profile info
+            
             owner = User.query.get(owner_id)
             
             return {

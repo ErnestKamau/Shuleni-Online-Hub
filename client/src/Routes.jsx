@@ -24,7 +24,7 @@ import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
-import Attendances from './pages/Attendance';
+import AttemptAssessmentPage from './pages/AttemptAssessmentPage';import Attendances from './pages/Attendance';
 
 
 export const AppRoutes = () => {
@@ -39,7 +39,7 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* 🔁 Default route */}
+  
       <Route
         path="/"
         element={
@@ -47,7 +47,6 @@ export const AppRoutes = () => {
         }
       />
 
-      {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
         <Route path="/attendances" element={<Attendances />} />
         <Route path="/login" element={<Login />} />
@@ -75,7 +74,7 @@ export const AppRoutes = () => {
       } 
       />
 
-      {/* 🔐 Owner-only routes */}
+      {/* Owner-only routes */}
       
       <Route
         path="/owner-dashboard"
@@ -135,7 +134,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Educator-only routes */}
+      {/* Educator-only routes */}
       <Route
         path="/educator-dashboard"
         element={
@@ -145,16 +144,7 @@ export const AppRoutes = () => {
         }
       />
 
-      <Route
-        path="/educator-dashboard/class"
-        element={
-          <ProtectedRoute allowedRoles={['educator']}>
-            <EducatorClassManagement />
-          </ProtectedRoute>
-        }
-      />
-
-      {/* 🔐 Student-only routes */}
+      {/* Student-only routes */}
       <Route
         path="/student-dashboard"
         element={
@@ -196,9 +186,18 @@ export const AppRoutes = () => {
         }
       />
 
+      <Route
+      path="/student/assessments/:assessmentId/attempt"
+      element={
+      <ProtectedRoute allowedRoles={['student']}>
+        <AttemptAssessmentPage />
+      </ProtectedRoute>
+      }
+      />
 
 
-      {/* 🔐 Shared routes: owner, educator, student */}
+
+      {/* Shared routes: owner, educator, student */}
       <Route
         path="/change-password"
         element={

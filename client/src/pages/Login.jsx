@@ -23,13 +23,11 @@ const Login = () => {
       const res = await axios.post('/login', formData);
       login(res.data, res.data.token);
       
-      // Check if this is a first login - redirect to change password
       if (res.data.first_login === true) {
         navigate('/change-password?first_login=true');
         return;
       }
       
-      // Redirect based on role for normal logins
       const userRole = res.data.role;
 
       if (userRole === 'owner') {
@@ -39,7 +37,7 @@ const Login = () => {
       } else if (userRole === 'student') {
         navigate('/student-dashboard');
       } else {
-        navigate('/'); // fallback or 404
+        navigate('/');
       }
 
     } catch (err) {

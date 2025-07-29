@@ -29,7 +29,6 @@ const Sidebar = () => {
 
   const schoolLogo = "/logo.png";
 
-  // Helper function to check if current path matches menu item
   const isActive = (path) => location.pathname === path;
   const isActivePattern = (pattern) => location.pathname.includes(pattern);
 
