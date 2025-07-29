@@ -63,11 +63,11 @@ const StudentDashboard = () => {
 
   const { student, school, classes, assessments, submissions, attendance_summary, class_attendance } = dashboard;
 
-  // Helper: Get pending assessments (no submission)
+  
   const submittedIds = new Set(submissions.map(s => s.assessment_id));
   const pendingAssessments = assessments.filter(a => !submittedIds.has(a.id));
 
-  // Helper: Upcoming deadlines (assessments not yet submitted, sorted by start_time)
+
   const upcoming = pendingAssessments
     .filter(a => a.start_time)
     .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))

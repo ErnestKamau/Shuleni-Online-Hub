@@ -10,14 +10,12 @@ from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
 from flask_jwt_extended import jwt_required
-
-# Import from extensions
 from extensions import db, ma, jwt, bcrypt, cors
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-# Initialize extensions with app
+
 db.init_app(app)
 ma.init_app(app)
 jwt.init_app(app)
@@ -27,8 +25,7 @@ api = Api(app)
 migrate = Migrate(app, db)
 
 
-
-# import routes
+# routes
 from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool, StudentDashboard
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
@@ -39,13 +36,10 @@ from routes.school_management import SchoolDetails, AssignUserToClass
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
 from routes.assessment_routes import AssessmentById
-
-# import models
 from models import *
 
 
 
-# Initialize schemas
 school_owner_schema = SchoolOwnerRegistrationSchema()
 student_creation_schema = StudentCreationSchema()
 educator_creation_schema = EducatorCreationSchema()
@@ -56,17 +50,14 @@ auth_response_schema = AuthResponseSchema()
 user_creation_response_schema = UserCreationResponseSchema()
 
 
-# Enhanced Resource classes with validation
 class ValidatedSchoolOwnerRegister(SchoolOwnerRegister):
     def post(self):
         try:
-            # Validate input data
             data = school_owner_schema.load(request.get_json())
             
-            # Set the validated data in request for parent class
+            
             request.validated_data = data
             
-            # Call parent method
             response = super().post()
             return response
             
@@ -79,13 +70,11 @@ class ValidatedAdminCreateStudent(AdminCreateStudent):
     @jwt_required()
     def post(self):
         try:
-            # Validate input data
             data = student_creation_schema.load(request.get_json())
             
-            # Set the validated data in request for parent class
             request.validated_data = data
             
-            # Call parent method with validated data
+            
             response = super().post()
             return response
             
@@ -98,13 +87,11 @@ class ValidatedAdminCreateEducator(AdminCreateEducator):
     @jwt_required()
     def post(self):
         try:
-            # Validate input data
             data = educator_creation_schema.load(request.get_json())
             
-            # Set the validated data in request for parent class
             request.validated_data = data
             
-            # Call parent method
+
             response = super().post()
             return response
             
@@ -116,13 +103,10 @@ class ValidatedAdminCreateEducator(AdminCreateEducator):
 class ValidatedLogin(Login):
     def post(self):
         try:
-            # Validate input data
             data = login_schema.load(request.get_json())
             
-            # Set the validated data in request for parent class
             request.validated_data = data
             
-            # Call parent method
             response = super().post()
             return response
             
@@ -135,13 +119,12 @@ class ValidatedChangePassword(ChangePassword):
     @jwt_required()
     def post(self):
         try:
-            # Validate input data
             data = change_password_schema.load(request.get_json())
             
-            # Set the validated data in request for parent class
+            
             request.validated_data = data
             
-            # Call parent method
+            
             response = super().post()
             return response
             
@@ -152,15 +135,13 @@ class ValidatedChangePassword(ChangePassword):
 
 
 
-# define your resource class
+
 class Home(Resource):
     def get(self):
         return make_response({"status": "healthy", "message": "Shuleni API is running"}, 200)
 
-# register the route
+
 api.add_resource(Home, '/api/home', endpoint='home')
-
-
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
 

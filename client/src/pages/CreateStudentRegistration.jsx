@@ -21,7 +21,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
 
   
   const [isLoading, setIsLoading] = useState(false);
-  // const [studentCreated, setStudentCreated] = useState(null)
+
   const navigate = useNavigate();
 
 
@@ -133,7 +133,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
                 type: 'text',
                 placeholder: 'Enter class ID',
               },
-              // Only show school_id field when not pre-filled from query params
+              
               ...(!schoolIdFromQuery ? [{
                 label: 'School ID (Required when adding from sidebar/dashboard)',
                 name: 'school_id',

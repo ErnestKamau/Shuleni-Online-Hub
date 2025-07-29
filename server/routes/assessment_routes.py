@@ -19,7 +19,7 @@ class AssessmentById(Resource):
 
     @jwt_required()
     def post(self, id):
-        # Student submits answers
+        
         current_user = json.loads(get_jwt_identity())
         user = User.query.get(current_user['id'])
         data = request.get_json()
@@ -38,5 +38,3 @@ class AssessmentById(Resource):
         db.session.commit()
         return make_response({"message": "Submission saved"}, 201)
 
-# In app.py
-# api.add_resource(AssessmentById, "/api/assessments/<int:id>")

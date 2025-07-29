@@ -37,7 +37,7 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* 🔁 Default route */}
+  
       <Route
         path="/"
         element={
@@ -45,7 +45,6 @@ export const AppRoutes = () => {
         }
       />
 
-      {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
         
         <Route path="/login" element={<Login />} />
@@ -54,7 +53,7 @@ export const AppRoutes = () => {
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
 
-      {/* 🔐 Owner-only routes */}
+      {/* Owner-only routes */}
       
       <Route
         path="/owner-dashboard"
@@ -114,7 +113,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Educator-only routes */}
+      {/* Educator-only routes */}
       <Route
         path="/educator-dashboard"
         element={
@@ -124,7 +123,7 @@ export const AppRoutes = () => {
         }
       />
 
-      {/* 🔐 Student-only routes */}
+      {/* Student-only routes */}
       <Route
         path="/student-dashboard"
         element={
@@ -177,7 +176,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Shared routes: owner, educator, student */}
+      {/* Shared routes: owner, educator, student */}
       <Route
         path="/change-password"
         element={

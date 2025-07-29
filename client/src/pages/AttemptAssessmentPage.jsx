@@ -24,7 +24,6 @@ const AttemptAssessmentPage = () => {
   const [startedAt, setStartedAt] = useState(null);
   const timerRef = useRef();
 
-  // Fetch assessment
   useEffect(() => {
     const fetchAssessment = async () => {
       setLoading(true);
@@ -46,7 +45,7 @@ const AttemptAssessmentPage = () => {
     fetchAssessment();
   }, [assessmentId, navigate]);
 
-  // Timer logic
+  
   useEffect(() => {
     if (!timer) return;
     timerRef.current = setInterval(() => {
@@ -62,7 +61,7 @@ const AttemptAssessmentPage = () => {
     return () => clearInterval(timerRef.current);
   }, [timer]);
 
-  // Autosave
+
   useEffect(() => {
     if (assessment) {
       localStorage.setItem(
@@ -72,7 +71,7 @@ const AttemptAssessmentPage = () => {
     }
   }, [answers, assessmentId, assessment]);
 
-  // Restore progress
+  
   useEffect(() => {
     const saved = localStorage.getItem(`assessment_${assessmentId}_answers`);
     if (saved) setAnswers(JSON.parse(saved));
@@ -114,7 +113,6 @@ const AttemptAssessmentPage = () => {
       </div>
     );
 
-  // Timer display
   const mins = Math.floor(timeLeft / 60);
   const secs = timeLeft % 60;
 

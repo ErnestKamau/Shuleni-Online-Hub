@@ -11,7 +11,7 @@ class UserSchema(SQLAlchemyAutoSchema):
         sqla_session = db.session
         exclude = ['password_hash']  
     
-    #custom fields for nested relationships
+    
     student_profile = fields.Nested('StudentSchema', exclude=['user'], dump_only=True)
     teacher_profile = fields.Nested('TeacherSchema', exclude=['user'], dump_only=True)
     school = fields.Nested('SchoolSchema', exclude=['users'], dump_only=True)
@@ -42,7 +42,7 @@ class SchoolSchema(SQLAlchemyAutoSchema):
     
     users = fields.Nested('UserSchema', many=True, exclude=['school'], dump_only=True)
 
-# Custom validation schemas for API requests
+
 class SchoolOwnerRegistrationSchema(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
     email = fields.Email(required=True)
