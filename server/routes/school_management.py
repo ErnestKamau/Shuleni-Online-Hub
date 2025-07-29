@@ -12,11 +12,20 @@ class SchoolDetails(Resource):
     def get(self, school_id):
         current_user = json.loads(get_jwt_identity())
         
-        if current_user['role'] != 'owner':
+        if current_user['role'] not in ['owner', 'educator']:
             return {"error": "Unauthorized"}, 403
             
         try:
-            school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
+
+            school = None
+
+            if current_user['role'] == 'owner':
+                school = School.query.filter_by(id=school_id, owner_id=current_user['id']).first()
+            elif current_user['role'] == 'educator':
+                educator = Teacher.query.filter_by(user_id=current_user['id'], school_id=school_id).first()
+                if educator:
+                    school = School.query.get(school_id)
+
             if not school:
                 return {"error": "School not found or unauthorized"}, 404
             
@@ -30,7 +39,7 @@ class SchoolDetails(Resource):
             
             classes_data = []
             for class_ in classes:
-              
+                
                 members = ClassMember.query.filter_by(class_id=class_.id).all()
                 
                 class_students = []
@@ -69,7 +78,6 @@ class SchoolDetails(Resource):
                     "total_teachers": len(class_teachers)
                 }
                 classes_data.append(class_data)
-            
             
             assigned_user_ids = set()
             for class_ in classes:
@@ -192,7 +200,6 @@ class ClassManagement(Resource):
             if not data.get('name'):
                 return {"error": "Class name is required"}, 400
             
-        
             existing_class = Class.query.filter(
                 Class.name == data['name'],
                 Class.school_id == school_id,
@@ -270,10 +277,10 @@ class AssignUserToClass(Resource):
             user_ids = data.get('user_ids', [])
             role = data.get('role') 
 
-            print("🔥 Received POST to /assignments")
-            print("➡️ Raw data:", data)
-            print("🧍 user_ids:", user_ids, "🧾 type:", type(user_ids))
-            print("🎭 role:", role)
+            print("Received POST to /assignments")
+            print("Raw data:", data)
+            print("user_ids:", user_ids, " type:", type(user_ids))
+            print("role:", role)
             
             if not user_ids or not role:
                 return {"error": "user_ids and role are required"}, 400
@@ -300,7 +307,7 @@ class AssignUserToClass(Resource):
                         errors.append(f"User {user.full_name} is not an educator")
                         continue
                     
-
+                    
                     existing_assignment = ClassMember.query.filter_by(
                         class_id=class_id, 
                         user_id=user_id
@@ -309,7 +316,6 @@ class AssignUserToClass(Resource):
                         errors.append(f"User {user.full_name} is already assigned to this class")
                         continue
                     
-                   
                     assignment = ClassMember(
                         class_id=class_id,
                         user_id=user_id,

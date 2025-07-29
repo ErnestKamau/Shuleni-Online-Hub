@@ -24,7 +24,7 @@ class SchoolOwnerRegister(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
             
-
+        
         
         school = School(
             name=data['school_name'],
@@ -46,7 +46,7 @@ class SchoolOwnerRegister(Resource):
         )
         user.password_hash = data['password']
         
-    
+        
         school.owner_id = user.id
         
         db.session.add(user)
@@ -75,13 +75,13 @@ class AdminCreateStudent(Resource):
         
         
         if data.get('school_id'):
-        
+            
             target_school_id = data['school_id']
             school = School.query.filter_by(id=target_school_id, owner_id=current_user['id']).first()
             if not school:
                 return {"error": "School not found or unauthorized access"}, 403
         else:
-          
+            
             target_school_id = current_user['school_id']
         
         
@@ -389,7 +389,7 @@ class StudentDashboard(Resource):
         if not student_profile:
             return {"error": "Student profile not found"}, 404
 
-        # School info
+        
         school = School.query.get(student_profile.school_id)
         school_data = {
             "id": school.id,
@@ -397,7 +397,7 @@ class StudentDashboard(Resource):
             "address": school.address
         } if school else None
 
-        # Classes (via ClassMember)
+        
         class_memberships = ClassMember.query.filter_by(user_id=user.id, role_in_class='student').all()
         class_ids = [cm.class_id for cm in class_memberships]
         classes = Class.query.filter(Class.id.in_(class_ids)).all() if class_ids else []
@@ -405,7 +405,7 @@ class StudentDashboard(Resource):
             {"id": c.id, "name": c.name, "school_id": c.school_id} for c in classes
         ]
 
-        # Assessments for those classes
+       
         assessments = Assessment.query.filter(Assessment.class_id.in_(class_ids)).all() if class_ids else []
         assessments_data = [
             {
@@ -420,7 +420,7 @@ class StudentDashboard(Resource):
         ]
         assessment_ids = [a.id for a in assessments]
 
-      
+        
         submissions = Submission.query.filter(
             Submission.assessment_id.in_(assessment_ids),
             Submission.student_id == user.id

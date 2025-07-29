@@ -26,12 +26,12 @@ const CreateSchool = ({ onSuccess }) => {
 
     try {
       const response = await axios.post('/create-school', formData, {
-        withCredentials: true, 
+        withCredentials: true,
       }); 
 
       const { message, school_id, school_name, description, address } = response.data;
-      alert(`${message}\n\nSchool ID: ${school_id}\nSchool Name: ${school_name}\nDescription: ${description || 'N/A'}\nAddress: ${address || 'N/A'}`);
       
+      alert(`${message}\n\nSchool ID: ${school_id}\nSchool Name: ${school_name}\nDescription: ${description || 'N/A'}\nAddress: ${address || 'N/A'}`);
       
       console.log('School created:', {
         message,

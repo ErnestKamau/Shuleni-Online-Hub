@@ -23,7 +23,6 @@ const Login = () => {
       const res = await axios.post('/login', formData);
       login(res.data, res.data.token);
       
-      
       if (res.data.first_login === true) {
         navigate('/change-password?first_login=true');
         return;
@@ -38,7 +37,7 @@ const Login = () => {
       } else if (userRole === 'student') {
         navigate('/student-dashboard');
       } else {
-        navigate('/'); 
+        navigate('/');
       }
 
     } catch (err) {

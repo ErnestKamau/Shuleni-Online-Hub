@@ -128,7 +128,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
                 type: 'text',
                 placeholder: 'Enter class ID',
               },
-
+              
               ...(!schoolIdFromQuery ? [{
                 label: 'School ID (Required when adding from sidebar/dashboard)',
                 name: 'school_id',

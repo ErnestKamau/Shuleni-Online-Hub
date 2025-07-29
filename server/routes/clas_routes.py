@@ -36,7 +36,6 @@ class ClassSchema(ma.SQLAlchemySchema):
 class_schema = ClassSchema()
 classes_schema= ClassSchema(many=True)
 
-# --- Marshmallow Schemas ---
 
 class ResourceSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -276,7 +275,7 @@ class ClassAssessments(Resource):
         if not title or not type_ or not questions_input:
             return {"error": "Title, type, and questions required"}, 400
 
-       
+        
         questions = parse_questions(questions_input)
 
         assessment = Assessment(
@@ -301,6 +300,7 @@ def parse_questions(questions_input):
         return questions_input
     
     if isinstance(questions_input, str):
+        
         try:
             parsed = json.loads(questions_input)
             if isinstance(parsed, list):

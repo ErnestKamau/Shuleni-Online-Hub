@@ -50,8 +50,10 @@ class OwnerDashboard(Resource):
                 }
                 schools_data.append(school_data)
             
+            
             thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
-        
+            
+            
             school_ids = [school.id for school in owned_schools]
             
             recent_students = 0

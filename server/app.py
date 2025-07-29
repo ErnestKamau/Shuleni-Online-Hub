@@ -3,6 +3,9 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from flask_socketio import SocketIO
+from routes.schools import SchoolListResource, SchoolResource
+
 
 
 
@@ -10,12 +13,11 @@ from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
 from flask_jwt_extended import jwt_required
-
-
 from extensions import db, ma, jwt, bcrypt, cors
 
 app = Flask(__name__)
 app.config.from_object(Config)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
 db.init_app(app)
@@ -27,8 +29,7 @@ api = Api(app)
 migrate = Migrate(app, db)
 
 
-
-
+# routes
 from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool, StudentDashboard
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
@@ -38,11 +39,12 @@ from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
+from routes.educator_dashboard import EducatorDashboard
+from routes.chat import ChatListResource, ChatResource, ChatExportResource
+# Register real-time chat socket handlers
+from routes import chat_socket
 from routes.assessment_routes import AssessmentById
-
-
 from models import *
-
 
 
 
@@ -56,17 +58,14 @@ auth_response_schema = AuthResponseSchema()
 user_creation_response_schema = UserCreationResponseSchema()
 
 
-
 class ValidatedSchoolOwnerRegister(SchoolOwnerRegister):
     def post(self):
         try:
-            
             data = school_owner_schema.load(request.get_json())
             
-
+            
             request.validated_data = data
             
-           
             response = super().post()
             return response
             
@@ -80,7 +79,10 @@ class ValidatedAdminCreateStudent(AdminCreateStudent):
     def post(self):
         try:
             data = student_creation_schema.load(request.get_json())
+            
             request.validated_data = data
+            
+            
             response = super().post()
             return response
             
@@ -96,6 +98,8 @@ class ValidatedAdminCreateEducator(AdminCreateEducator):
             data = educator_creation_schema.load(request.get_json())
             
             request.validated_data = data
+            
+
             response = super().post()
             return response
             
@@ -107,8 +111,8 @@ class ValidatedAdminCreateEducator(AdminCreateEducator):
 class ValidatedLogin(Login):
     def post(self):
         try:
-           
             data = login_schema.load(request.get_json())
+            
             request.validated_data = data
             
             response = super().post()
@@ -124,7 +128,10 @@ class ValidatedChangePassword(ChangePassword):
     def post(self):
         try:
             data = change_password_schema.load(request.get_json())
+            
+            
             request.validated_data = data
+            
             
             response = super().post()
             return response
@@ -134,14 +141,15 @@ class ValidatedChangePassword(ChangePassword):
         except Exception as e:
             return {"error": str(e)}, 500
 
+
+
+
 class Home(Resource):
     def get(self):
         return make_response({"status": "healthy", "message": "Shuleni API is running"}, 200)
 
 
 api.add_resource(Home, '/api/home', endpoint='home')
-
-
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
 api.add_resource(Login, '/api/login', endpoint='login')
@@ -156,6 +164,8 @@ api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboa
 api.add_resource(StudentDashboard, '/api/student/dashboard', endpoint='student_dashboard')
 api.add_resource(ClassList, "/api/classes", endpoint="class_list")
 api.add_resource(ClassById, "/api/classes/<int:id>", endpoint="class_detail")
+api.add_resource(Attendances, "/api/attendances", endpoint="attendances_list")
+api.add_resource(AttendanceById, "/api/attendances/<int:id>", endpoint="attendance_detail")
 api.add_resource(
     AssignUserToClass,
     "/api/schools/<int:school_id>/classes/<int:class_id>/assignments",
@@ -167,3 +177,10 @@ api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint
 api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources", endpoint="class_resources")
 api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments", endpoint="class_assessments")
 api.add_resource(AssessmentById, "/api/assessments/<int:id>", endpoint="assessment_by_id")
+print(" EducatorDashboard route is being registered")
+api.add_resource(EducatorDashboard, '/api/educator/dashboard')
+
+
+api.add_resource(ChatListResource, "/api/chats", endpoint="chatlistresource")
+api.add_resource(ChatResource, "/api/chats/<int:chat_id>", endpoint="chatresource")
+api.add_resource(ChatExportResource, "/api/chats/export", endpoint="chatexportresource")

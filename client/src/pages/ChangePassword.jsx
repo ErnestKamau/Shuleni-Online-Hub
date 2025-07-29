@@ -82,10 +82,9 @@ const ChangePassword = () => {
         new_password: formData.new_password
       });
 
-      // Show success message
+      
       alert('Password changed successfully!');
       
-      // Clear form
       setFormData({ old_password: '', new_password: '', confirm_password: '' });
       
       if (user?.role === 'owner') {
@@ -117,7 +116,6 @@ const ChangePassword = () => {
 
   const handleCancel = () => {
     if (isFirstLogin) {
-      // For first login, user must change password - offer logout option
       if (confirm('You must change your password before accessing the system. Do you want to logout?')) {
         logout();
         navigate('/login');

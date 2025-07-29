@@ -19,6 +19,7 @@ import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 import StudentClasses from './pages/StudentClasses';
+import EducatorClassManagement from './components/classes/EducatorClassManagement';
 import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
@@ -40,6 +41,7 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
+  
       <Route
         path="/"
         element={
@@ -47,18 +49,34 @@ export const AppRoutes = () => {
         }
       />
 
-      
       <Route element={<PublicLayout />}>
-        
+        <Route path="/attendances" element={<Attendances />} />
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+        
         
 
-
+        {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
+      {/*mwalimu routes*/}
+      <Route path="/educator-dashboard" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorDashboard />
+        </ProtectedRoute>    
+        }
+      />
 
+      <Route path="/attendances" element={
+        <ProtectedRoute>
+          <Attendances />
+        </ProtectedRoute>
+        
+      } 
+      />
+
+      {/* Owner-only routes */}
       
       <Route
         path="/owner-dashboard"
@@ -128,21 +146,7 @@ export const AppRoutes = () => {
         }
       />
 
-      import AttendancePage from './pages/Educator/AttendancePage';
-
-...
-        <Route
-  path="/educator-dashboard/attendance"
-  element={
-    <ProtectedRoute allowedRoles={['educator']}>
-      <AttendancePage />
-    </ProtectedRoute>
-  }
-/>
-
-
-
-      {/*  Student-only routes */}
+      {/* Student-only routes */}
       <Route
         path="/student-dashboard"
         element={

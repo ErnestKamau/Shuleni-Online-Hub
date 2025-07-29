@@ -4,8 +4,6 @@ import { useAuth } from "../../context/AuthContext";
 
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-
-
 import {FaChalkboardTeacher,FaUpload,FaUsers,FaBook,FaCalendarCheck, FaEnvelope,FaUser,FaSignOutAlt,} from "react-icons/fa";
 
 const EducatorDashboard = () => {
@@ -80,7 +78,7 @@ const EducatorDashboard = () => {
         <nav className="space-y-4">
           {[
             { label: "Dashboard", icon: <FaChalkboardTeacher />, route: "/educator-dashboard" },
-            { label: "My Classes", icon: <FaBook /> , route: "/educator-dashboard/classes"},
+            { label: "My Classes", icon: <FaBook /> , route: "/educator-dashboard/class"},
             { label: "Attendance", icon: <FaCalendarCheck /> , route: "/educator-dashboard/attendance"},
             { label: "Upload Materials", icon: <FaUpload /> , route: "/educator-dashboard/upload" },
             { label: "Messages", icon: <FaEnvelope /> , route: "/educator-dashboard/messages"},

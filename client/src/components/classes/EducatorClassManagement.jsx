@@ -4,9 +4,11 @@ import api from '../../api/axios';
 import { FaUserGraduate, FaChalkboardTeacher, FaPlusCircle, FaTrash, FaUsers, FaCheck, FaTimes, FaFileUpload, FaClipboardList, FaDownload } from "react-icons/fa";
 import Sidebar from '../common/Sidebar';
 
-const ClassManagement = () => {
-  const { schoolId, classId } = useParams();
+const EducatorClassManagement = () => {
+  const { schoolIdss, classIdsss } = useParams();
+  const [schoolId , setSchoolId]= useState(null)
   const navigate = useNavigate();
+  const [classId , setClassId]= useState([])
 
   const [classData, setClassData] = useState(null);
   const [schoolData, setSchoolData] = useState({});
@@ -23,29 +25,60 @@ const ClassManagement = () => {
   const [resources, setResources] = useState([]);
   const [assessments, setAssessments] = useState([]);
 
+
+
   useEffect(() => {
+  console.log("Fetching educator dashboard...");
+  api.get("/educator/dashboard")
+    .then((res) => {
+      console.log("Fetched educator dashboard:", res.data);
+      setSchoolId(res.data.schoolId);
+      setClassId(res?.data?.classIds)
+      setError(null);
+    })
+    .catch((err) => {
+      console.error("Dashboard fetch error:", err);
+      setError(err);
+      if (err.response?.status === 401 || err.message.includes("Unauthorized")) {
+        localStorage.removeItem("token");
+        handleLogout();
+      }
+    });
+}, []);
+
+useEffect(() => {
+  console.log("schoob:", schoolId)
+  // only run when schoolId is set
+  if (schoolId) {
     fetchClassData();
-  }, [schoolId, classId]);
+  }
+}, [schoolId, classId]);
 
-  
 
+
+
+  const handleLogout = ()=>{
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
 
   const fetchClassData = async () => {
     setLoading(true);
     try {
+      // Get school details (for unassigned users)
       const schoolRes = await api.get(`/schools/${schoolId}/details`);
       setSchoolData(schoolRes.data);
 
-      // current class
+      // Find current class
       const currentClass = schoolRes.data.classes.find(c => c.id === parseInt(classId));
       setClassData(currentClass);
 
-      // resources for this class
+      // Fetch resources for this class
       const resRes = await api.get(`/classes/${classId}/resources`);
       setResources(resRes.data.resources || []);
 
-      // assessments for this class
+      // Fetch assessments for this class
       const assRes = await api.get(`/classes/${classId}/assessments`);
       setAssessments(assRes.data.assessments || []);
 
@@ -57,7 +90,7 @@ const ClassManagement = () => {
     }
   };
 
-  
+  // Assign users to class
   const handleAssignUsers = async (userIds, role) => {
     if (!classData || userIds.length === 0) return;
     try {
@@ -74,7 +107,7 @@ const ClassManagement = () => {
     }
   };
 
-  
+  // Remove user from class
   const handleRemoveUser = async (userId) => {
     try {
       await api.delete(`/schools/${schoolId}/classes/${classId}/assignments`, {
@@ -82,13 +115,12 @@ const ClassManagement = () => {
       });
       setSuccessMessage('User removed from class');
       await fetchClassData();
-      console.log('User removed:', userId);
     } catch (err) {
       setError(err.message || 'Failed to remove user');
     }
   };
 
-  
+  // Add resource to class
   const handleAddResource = async (e) => {
     e.preventDefault();
     if (!resourceTitle || !resourceFile) {
@@ -112,7 +144,7 @@ const ClassManagement = () => {
     }
   };
 
-  
+  // Add assessment to class
   const handleAddAssessment = async (e) => {
     e.preventDefault();
     if (!assessmentTitle || !assessmentQuestions) {
@@ -135,6 +167,7 @@ const ClassManagement = () => {
     }
   };
 
+  // Selection helpers
   const toggleStudentSelection = (studentId) => {
     const newSelected = new Set(selectedStudents);
     newSelected.has(studentId) ? newSelected.delete(studentId) : newSelected.add(studentId);
@@ -171,7 +204,7 @@ const ClassManagement = () => {
         }}
       />
 
-      <Sidebar />
+      
 
       <main className="flex-1 p-8 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -242,29 +275,7 @@ const ClassManagement = () => {
                 ))}
               </div>
             </section>
-            {/* Teachers */}
-            <section className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaChalkboardTeacher className="text-green-500 mr-2" />
-                Teachers in {classData?.name} ({classData?.teachers?.length || 0})
-              </h3>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {classData?.teachers?.map(teacher => (
-                  <div key={teacher.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <div>
-                      <p className="font-medium">{teacher.full_name}</p>
-                      <p className="text-sm text-gray-500">{teacher.tsc_number}</p>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveUser(teacher.id)}
-                      className="text-red-500 hover:text-red-700 p-1"
-                    >
-                      <FaTimes />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
+            
           </div>
 
           {/* Assignment Section */}
@@ -304,39 +315,7 @@ const ClassManagement = () => {
                 ))}
               </div>
             </section>
-            {/* Unassigned Teachers */}
-            <section className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                  <FaChalkboardTeacher className="text-green-500 mr-2" />
-                  Unassigned Teachers ({schoolData.unassigned_teachers.length})
-                </h3>
-                {selectedTeachers.size > 0 && (
-                  <button
-                    onClick={() => handleAssignUsers(selectedTeachers, 'educator')}
-                    className="bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700"
-                  >
-                    Assign Selected ({selectedTeachers.size})
-                  </button>
-                )}
-              </div>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {schoolData.unassigned_teachers.map(teacher => (
-                  <div key={teacher.id} className="flex items-center p-2 bg-gray-50 rounded hover:bg-gray-100">
-                    <input
-                      type="checkbox"
-                      checked={selectedTeachers.has(teacher.id)}
-                      onChange={() => toggleTeacherSelection(teacher.id)}
-                      className="mr-3"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium">{teacher.full_name}</p>
-                      <p className="text-sm text-gray-500">TSC: {teacher.tsc_number}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            
           </div>
 
           {/* Resources Section */}
@@ -401,12 +380,13 @@ const ClassManagement = () => {
                 <option value="exam">Exam</option>
                 <option value="cats">CATS</option>
               </select>
-              <textarea
-              rows={6}
-              className="border border-gray-300 rounded px-3 py-2 w-full"
-              value={assessmentQuestions}
-              onChange={e => setAssessmentQuestions(e.target.value)}
-              placeholder="Type each question on a new line..."
+              <input
+                type="text"
+                placeholder="Questions (JSON or text)"
+                value={assessmentQuestions}
+                onChange={e => setAssessmentQuestions(e.target.value)}
+                className="border border-gray-300 rounded-md px-3 py-2"
+                required
               />
               <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
                 Add
@@ -430,6 +410,7 @@ const ClassManagement = () => {
             </h3>
             <button
               onClick={() => {
+                // Simple CSV export
                 const headers = ['Full Name', 'Admission/TSC', 'Role'];
                 const rows = [
                   ...(classData?.students || []).map(s => [s.full_name, s.admission_number, 'Student']),
@@ -455,4 +436,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default EducatorClassManagement;

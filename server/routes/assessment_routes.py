@@ -19,7 +19,7 @@ class AssessmentById(Resource):
 
     @jwt_required()
     def post(self, id):
-        # Student submits answers
+        
         current_user = json.loads(get_jwt_identity())
         user = User.query.get(current_user['id'])
         data = request.get_json()

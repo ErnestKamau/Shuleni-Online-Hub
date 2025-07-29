@@ -11,6 +11,7 @@ class UserSchema(SQLAlchemyAutoSchema):
         sqla_session = db.session
         exclude = ['password_hash']  
     
+    
     student_profile = fields.Nested('StudentSchema', exclude=['user'], dump_only=True)
     teacher_profile = fields.Nested('TeacherSchema', exclude=['user'], dump_only=True)
     school = fields.Nested('SchoolSchema', exclude=['users'], dump_only=True)

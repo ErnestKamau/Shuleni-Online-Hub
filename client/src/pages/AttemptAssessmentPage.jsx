@@ -24,7 +24,6 @@ const AttemptAssessmentPage = () => {
   const [startedAt, setStartedAt] = useState(null);
   const timerRef = useRef();
 
-  // Fetch assessment
   useEffect(() => {
     const fetchAssessment = async () => {
       setLoading(true);
@@ -71,7 +70,7 @@ const AttemptAssessmentPage = () => {
     }
   }, [answers, assessmentId, assessment]);
 
-
+  
   useEffect(() => {
     const saved = localStorage.getItem(`assessment_${assessmentId}_answers`);
     if (saved) setAnswers(JSON.parse(saved));

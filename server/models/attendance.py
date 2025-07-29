@@ -22,10 +22,16 @@ class Attendance(db.Model, SerializerMixin):
     serialize_rules = ('-class_.attendance_records', '-student.attendances', '-educator.marked_attendance','student_name',)
 
     @property
+    def class_name(self):
+        return self.school_class.name if self.school_class else None
+
+    @property
+    def educator_name(self):
+        return self.educator.full_name if self.educator else None
+
+    @property
     def student_name(self):
-        if self.student and self.student.user:
-            return self.student.user.name
-        return None
+        return self.student.full_name if self.student else None
   
 
     def __repr__(self):

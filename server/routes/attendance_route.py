@@ -4,10 +4,12 @@ from flask_migrate import Migrate
 from flask_restful import Api,Resource
 from app import app,db,api,ma
 from sqlalchemy import func, desc
+from datetime import datetime
 import csv
 import io
 from models import Attendance,User,Student
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
+import json
 
 
 
@@ -28,12 +30,17 @@ class AttendanceSchema(ma.SQLAlchemySchema):
     date =ma.auto_field()
     status = ma.auto_field()
     student_name = ma.Method("get_student_name")
+    educator_name = ma.Method("get_educator_name")
+    class_name = ma.Method("get_class_name")
 
     def get_student_name(self, obj):
-        try:
-            return getattr(obj.student.user, 'full_name', None)
-        except:
-            return None
+        return obj.student.full_name if obj.student else None
+    
+    def get_educator_name(self, obj):
+        return obj.educator.full_name if obj.educator else None
+
+    def get_class_name(self, obj):
+        return obj.class_.name if obj.class_ else None
 
 
 
@@ -66,6 +73,7 @@ class Index(Resource):
 
 class Attendances(Resource):
     def get(self):
+
         try:
             class_id = request.args.get("class_id", type=int)
             student_id = request.args.get("student_id", type=int)
@@ -138,7 +146,7 @@ class Attendances(Resource):
                 output = io.StringIO()
                 writer = csv.writer(output)
                 writer.writerow(["ID", "Class", "Student", "Educator", "Date", "Status", "Student Name"])
-                for a in attendances:
+                for a in all_attendances:
                     writer.writerow([
                         a.id, a.class_id, a.student_id,a.educator_id, a.date,a.status,
                         a.student.user.full_name if a.student and a.student.user else ""
@@ -163,35 +171,101 @@ class Attendances(Resource):
             return make_response({"error": str(e)}, 500)
     
         
-    
+    @jwt_required()
     def post(self):
+        current_user=json.loads(get_jwt_identity())
+        if current_user["role"] not in ["owner", "educator"]:
+            return {"error": "unauthorised"}, 403
+        
+        data = request.get_json()
+
+        class_id =data.get("class_id")
+        educator_id = current_user["id"]
+        date_str = data.get("date")
+        records = data.get("records")
+
+        if not class_id or not date_str or not records:
+            return {"error": "Missing class_id, date, or records"}, 400
+        
         try:
-            data = request.get_json()
-            new_attendance = Attendance(
+            date= datetime.strptime(date_str, "%Y-%m-%d").date()
+        except ValueError:
+            return {"error":" Invalid date formart, expected YYYY-MM-DD"}, 400
+        
+        created = 0
+        updated = 0
+
+        for record in records:
+            student_id = record.get("student_id")
+            status = record.get("status")
+
+            if not student_id or status not in ["present", "absent", "late"]:
+                continue
+
+
+            existing = Attendance.query.filter_by(
+                class_id=class_id,
+                student_id=student_id,
+                date=date,
+            ).first()
+
+            if existing:
+                existing.status=status
+                existing.educator_id=educator_id
+                updated +=1
+
+            else:
+                new_record = Attendance(
+                    class_id=class_id,
+                    student_id=student_id,
+                    educator_id=educator_id,
+                    date=date,
+                    status=status,
+                )
+
+                db.session.add(new_record)
+                created +=1
+
+        db.session.commit()
+        return {
+            "message": "Attendance records processed",
+            "created": created,
+            "updated": updated
+        }, 201
+    
+
+#        try:
+#             data = request.get_json()
+#             new_attendance = Attendance(
                 
-                class_id = data["class_id"],
-                student_id = data["student_id"],
-                educator_id = data["educator_id"],
-                status = data["status"]
+#                 class_id = data["class_id"],
+#                 student_id = data["student_id"],
+#                 educator_id = data["educator_id"],
+#                 status = data["status"]
 
-            )
-            db.session.add(new_attendance)
-            db.session.commit()
+#             )
+#             db.session.add(new_attendance)
+#             db.session.commit()
 
-            response = make_response(
-                attendance_schema.dump(new_attendance),
-                201,
-            )
-            return response
-        except KeyError as e:
-            return make_response({"error": f"Missing field: {str(e)}"}, 400)
-        except Exception as e:
-            return make_response({"error": str(e)}, 500)
+#             response = make_response(
+#                 attendance_schema.dump(new_attendance),
+#                 201,
+#             )
+#             return response
+#         except KeyError as e:
+#             return make_response({"error": f"Missing field: {str(e)}"}, 400)
+#         except Exception as e:
+#             return make_response({"error": str(e)}, 500)
             
-
+# #api.add_resource(Attendances, "/attendances")
 
 class AttendanceById(Resource):
+    @jwt_required()
     def get(self,id):
+        current_user=json.loads(get_jwt_identity())
+        if current_user["role"] not in ["owner", "educator"]:
+            return {"error": "unauthorised"}, 403
+        
         attendance = Attendance.query.options(
             db.joinedload(Attendance.student)
         ).filter(Attendance.id==id).first()
@@ -203,7 +277,12 @@ class AttendanceById(Resource):
         )
         return response
     
+    @jwt_required()
     def patch(self,id):
+        current_user=json.loads(get_jwt_identity())
+        if current_user["role"] not in ["owner", "educator"]:
+            return {"error": "unauthorised"}, 403
+        
         data = request.get_json()
         patch_attendance = Attendance.query.options(
             db.joinedload(Attendance.student)
@@ -220,8 +299,11 @@ class AttendanceById(Resource):
             200,
         )
         return response
-    
+    @jwt_required()
     def delete(self,id):
+        current_user=json.loads(get_jwt_identity())
+        if current_user["role"] not in ["owner", "educator"]:
+            return {"error": "unauthorised"}, 403
         record = Attendance.query.filter(Attendance.id==id).first()
         if not record:
             return make_response({"error": "Attendance record not found"}, 404)

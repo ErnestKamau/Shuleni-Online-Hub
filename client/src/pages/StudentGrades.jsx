@@ -46,11 +46,9 @@ const StudentGrades = () => {
     fetchGrades();
   }, []);
 
-  
   const classMap = Object.fromEntries(classes.map(c => [c.id, c.name]));
   const submissionMap = Object.fromEntries(submissions.map(s => [s.assessment_id, s]));
 
-  
   const typeScores = {};
   assessments.forEach(a => {
     const submission = submissionMap[a.id];
