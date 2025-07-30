@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from '../../api/axios';
 import { FaUserGraduate, FaChalkboardTeacher, FaPlusCircle, FaTrash, FaUsers, FaCheck, FaTimes, FaFileUpload, FaClipboardList, FaDownload } from "react-icons/fa";
-import Sidebar from '../common/Sidebar';
+import EducatorSidebar from "../common/EducatorSidebar";
+
+
 
 const EducatorClassManagement = () => {
   const { schoolIdss, classIdsss } = useParams();
@@ -203,6 +205,7 @@ useEffect(() => {
           pointerEvents: "none",
         }}
       />
+      <EducatorSidebar/>
 
       
 
@@ -410,7 +413,7 @@ useEffect(() => {
             </h3>
             <button
               onClick={() => {
-                // Simple CSV export
+                
                 const headers = ['Full Name', 'Admission/TSC', 'Role'];
                 const rows = [
                   ...(classData?.students || []).map(s => [s.full_name, s.admission_number, 'Student']),

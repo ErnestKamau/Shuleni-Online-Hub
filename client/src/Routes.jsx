@@ -66,6 +66,13 @@ export const AppRoutes = () => {
         }
       />
 
+       <Route path="/educator-dashboard/class" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorClassManagement />
+        </ProtectedRoute>    
+        }
+      />
+
       <Route path="/attendances" element={
         <ProtectedRoute>
           <Attendances />

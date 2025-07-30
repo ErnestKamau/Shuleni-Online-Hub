@@ -1,6 +1,5 @@
 // src/components/common/EducatorSidebar.jsx
 import React from "react";
-import EducatorSidebar from "../common/EducatorSidebar"; 
 
 import { useNavigate } from "react-router-dom";
 import {
