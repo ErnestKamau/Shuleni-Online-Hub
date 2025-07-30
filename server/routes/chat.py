@@ -25,7 +25,9 @@ class ChatSchema(ma.SQLAlchemySchema):
     message = ma.auto_field()
     timestamp = ma.auto_field()
 
-    user_name = ma.Function(lambda obj: obj.user.full_name if obj.user else "Unknown")
+    user_name = ma.Function(lambda obj: obj.sender.full_name if obj.sender else "Unknown")
+    user_role = ma.Function(lambda obj: obj.sender.role if obj.sender else "unknown")
+    class_name = ma.Function(lambda obj: obj.class_.name if obj.class_ else "Unknown")
     relative_time = ma.Function(lambda obj: humanize.naturaltime(datetime.utcnow() - obj.timestamp))
 
     url = ma.Hyperlinks({
@@ -58,35 +60,35 @@ class ChatListResource(Resource):
 
     @jwt_required()
     def post(self):
-        current_user = json.loads(get_jwt_identity())  # from JWT
+        current_user = json.loads(get_jwt_identity())  
         try:
             data = request.get_json()
             message = data.get("message")
+            class_id = data.get("class_id")  # Accept class_id from frontend
 
-            if not message:
-                return {"error": "Message is required"}, 400
+            if not message or not class_id:
+                return {"error": "Message and class_id are required"}, 400
 
-            # Fetch the actual User record from DB
             user = User.query.get(current_user["id"])
             if not user:
                 return {"error": "User not found"}, 404
 
-            # Automatically detect class_id
-            class_id = None
+            # Validate class assignment
+            if user.role == "student":
+                if not user.student_profile or user.student_profile.class_id != class_id:
+                    return {"error": "Student not assigned to this class"}, 403
 
-            if user.role == "student" and user.student_profile:
-                class_id = user.student_profile.class_id
+            elif user.role == "educator":
+                educator_class_ids = [t.class_id for t in user.teacher_profile]
+                print("Educator assigned classes:", [t.class_id for t in user.teacher_profile])
+                print("class_id sent by frontend:", class_id)
 
-            elif user.role == "educator" and user.teacher_profile:
-                class_id = user.teacher_profile[0].class_id
+                if class_id not in educator_class_ids:
+                    return {"error": "Educator not assigned to this class"}, 403
 
             else:
-                return {"error": "This role is not allowed to send chats or no class assigned"}, 403
+                return {"error": "This role is not allowed to send chats"}, 403
 
-            if not class_id:
-                return {"error": "User has no class assigned"}, 400
-
-            # Create and save the Chat
             new_chat = Chat(
                 class_id=class_id,
                 user_id=user.id,
@@ -133,7 +135,7 @@ class ChatExportResource(Resource):
             writer.writerow([
                 chat.id,
                 chat.class_id,
-                chat.user.full_name if chat.user else "Unknown",
+                chat.sender.full_name if chat.user else "Unknown",
                 chat.message,
                 chat.timestamp.strftime("%Y-%m-%d %H:%M:%S")
             ])

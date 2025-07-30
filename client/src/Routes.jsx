@@ -24,7 +24,9 @@ import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
-import AttemptAssessmentPage from './pages/AttemptAssessmentPage';import Attendances from './pages/Attendance';
+import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
+import Attendances from './pages/Attendance';
+import ChatPageWrapper from './pages/ChatPageWrapper';
 
 
 export const AppRoutes = () => {
@@ -53,6 +55,7 @@ export const AppRoutes = () => {
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
+
         
         
 
@@ -222,6 +225,16 @@ export const AppRoutes = () => {
        
       } 
        />
+
+       <Route
+          path="/educator/class/:classId/chat"
+          element={
+            <ProtectedRoute allowedRoles={['student', 'educator']}>
+              <ChatPageWrapper />
+            </ProtectedRoute>
+          }
+        />
+
 
       <Route
         path="/user-profile"
