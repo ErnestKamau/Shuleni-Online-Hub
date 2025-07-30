@@ -10,11 +10,13 @@ const ChatBox = ({ messages }) => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+   const safeMessages = Array.isArray(messages) ? messages : [];
+
 
 
   return (
     <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100">
-      {messages.map((msg) => (
+      {safeMessages.map((msg) => (
         <ChatMessage key={msg.id} message={msg} />
       ))}
       <div ref={endRef} />

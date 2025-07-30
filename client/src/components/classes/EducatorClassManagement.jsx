@@ -228,7 +228,7 @@ useEffect(() => {
               Back to School
             </button>
             <button 
-              onClick={() => navigate(`/classes/${classData?.id}/chat`)}
+              onClick={() => navigate(`/educator/class/${classId}/chat`)}
               className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors ml-4"
             >
               Open Class Chat

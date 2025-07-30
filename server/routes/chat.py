@@ -64,7 +64,7 @@ class ChatListResource(Resource):
         try:
             data = request.get_json()
             message = data.get("message")
-            class_id = data.get("class_id")  # Accept class_id from frontend
+            class_id = int(data.get("class_id"))  # Accept class_id from frontend
 
             if not message or not class_id:
                 return {"error": "Message and class_id are required"}, 400
