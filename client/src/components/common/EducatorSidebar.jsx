@@ -1,6 +1,5 @@
 // src/components/common/EducatorSidebar.jsx
 import React from "react";
-
 import { useNavigate } from "react-router-dom";
 import {
   FaChalkboardTeacher,
@@ -13,14 +12,14 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-const EducatorSidebar = ({ educator, handleLogout }) => {
+const EducatorSidebar = ({ educator,  schoolName = 'School', handleLogout }) => {
   const navigate = useNavigate();
 
   return (
     <aside className="w-64 bg-white shadow-lg p-6 z-10 sticky top-0 h-screen hidden lg:block">
       <div className="flex items-center space-x-3 mb-10">
         <img src={educator?.school?.logo || "/logo.png"} alt="School Logo" className="w-12 h-12" />
-        <span className="text-xl font-bold text-gray-800">{educator?.school?.name || "School"}</span>
+        <span className="text-xl font-bold text-gray-800">{educator?.school?.name || schoolName}</span>
       </div>
 
       <nav className="space-y-4">

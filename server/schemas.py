@@ -9,7 +9,7 @@ class UserSchema(SQLAlchemyAutoSchema):
         model = User
         load_instance = True
         sqla_session = db.session
-        exclude = ['password_hash']  
+        exclude = ['_password_hash']  
     
     
     student_profile = fields.Nested('StudentSchema', exclude=['user'], dump_only=True)
