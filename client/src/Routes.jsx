@@ -31,6 +31,7 @@ import ChatPageWrapper from './pages/ChatPageWrapper';
 import ClassAssessmentSubmissions from './pages/ClassAssessmentSubmissions';
 
 
+
 export const AppRoutes = () => {
   const { loading } = useAuth();
 
@@ -66,6 +67,8 @@ export const AppRoutes = () => {
         </ProtectedRoute>    
         }
       />
+
+      
 
        <Route path="/educator-dashboard/class" element={
         <ProtectedRoute allowedRoles={['educator']}>
