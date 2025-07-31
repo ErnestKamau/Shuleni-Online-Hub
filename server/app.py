@@ -1,5 +1,5 @@
 
-from flask import Flask, make_response, send_from_directory
+from flask import Flask, make_response, send_from_directory,jsonify,request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -22,6 +22,7 @@ app = Flask(__name__,
             )
 app.config.from_object(Config)
 socketio = SocketIO(app, cors_allowed_origins="*")
+
 
 
 db.init_app(app)
@@ -154,6 +155,12 @@ class Home(Resource):
 @app.route('/uploads/<path:filename>')
 def uploaded_file(filename):
     return send_from_directory('uploads', filename)
+
+@app.errorhandler(404)
+def not_found(e):
+    if request.path.startswith('/api'):
+        return jsonify({'error': 'Not found'}), 404
+    return render_template("index.html")
 
 
 api.add_resource(Home, '/api/home', endpoint='home')
