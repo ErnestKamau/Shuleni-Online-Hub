@@ -6,7 +6,7 @@ from app import app,db,api,ma
 from sqlalchemy import func, desc
 import csv
 import io
-from models import Class,User, ClassMember,Student, Assessment, Resources
+from models import Class,User, ClassMember,Student, Assessment, Resources, Submission
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 from datetime import datetime, timezone
@@ -72,6 +72,24 @@ class AssessmentSchema(ma.SQLAlchemySchema):
 
 assessment_schema = AssessmentSchema()
 assessments_schema = AssessmentSchema(many=True)
+
+class SubmissionSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Submission
+        load_instance = True
+
+    id = ma.auto_field()
+    answers = ma.auto_field()
+    student_id = ma.auto_field()
+    assessment_id = ma.auto_field()
+    submitted_at = ma.auto_field()
+    score = ma.auto_field()
+    graded_by = ma.auto_field()
+    remarks = ma.auto_field()
+
+
+submission_schema = SubmissionSchema()
+submissions_schema = SubmissionSchema(many=True)
 
 
 class Index2(Resource):
@@ -311,4 +329,79 @@ def parse_questions(questions_input):
         return [{"question": line} for line in lines]
     return []
 
+# class AssessmentSubmissions(Resource):
+#     @jwt_required()
+#     def get(self, class_id, assessment_id):
+#         try:
+            
+#             submissions = Submission.query.filter_by(assessment_id=assessment_id).all()
+#             return make_response({"submissions": submissions_schema.dump(submissions)}, 200)
+#         except Exception as e:
+#             return make_response({"error": str(e)}, 500)
 
+#     @jwt_required()
+#     def post(self, class_id, assessment_id):
+#         current_user = json.loads(get_jwt_identity())
+#         try:
+#             data = request.get_json()
+#             answers = data.get("answers")
+
+#             if not answers:
+#                 return make_response({"error": "Submission answers are required"}, 400)
+
+        
+#             assessment = Assessment.query.filter_by(id=assessment_id, class_id=class_id).first()
+#             if not assessment:
+#                 return {"error": "Assessment not found in this class"}, 404
+
+#             new_submission = Submission(
+#                 answers=answers,
+#                 student_id=current_user["id"],
+#                 assessment_id=assessment_id,
+#                 submitted_at=datetime.now(timezone.utc)
+#             )
+
+#             db.session.add(new_submission)
+#             db.session.commit()
+
+#             return make_response(submission_schema.dump(new_submission), 201)
+
+#         except Exception as e:
+#             return make_response({"error": "Submission failed", "details": str(e)}, 500)
+
+class SubmissionByID(Resource):
+    @jwt_required()
+    def get(self, id):
+        try:
+            submission = Submission.query.get_or_404(id)
+            return make_response(submission_schema.dump(submission), 200)
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
+
+    @jwt_required()
+    def patch(self, id):
+        current_user = json.loads(get_jwt_identity())
+        try:
+            submission = Submission.query.get_or_404(id)
+            data = request.get_json()
+
+            
+            submission.score = data.get("score", submission.score)
+            submission.remarks = data.get("remarks", submission.remarks)
+            submission.graded_by = current_user["id"]
+
+            db.session.commit()
+            return make_response(submission_schema.dump(submission), 200)
+
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
+        
+    @jwt_required()
+    def delete(self, id):
+        try:
+            submission = Submission.query.get_or_404(id)
+            db.session.delete(submission)
+            db.session.commit()
+            return make_response({"message": "Submission deleted"}, 200)
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
