@@ -117,43 +117,53 @@ const AttemptAssessmentPage = () => {
   const secs = timeLeft % 60;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      <div className="max-w-2xl w-full bg-white rounded-lg shadow p-8">
-        <h1 className="text-2xl font-bold mb-2">{assessment.title}</h1>
-        <p className="mb-4 text-gray-600">{assessment.description}</p>
-        <div className="mb-6 text-lg font-semibold text-blue-600">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex flex-col items-center py-12 px-4">
+      <div className="w-full max-w-3xl bg-white rounded-3xl shadow-lg p-10 transition-all">
+        <h1 className="text-3xl font-bold text-gray-800 mb-2">
+          {assessment.title}
+        </h1>
+        <p className="mb-6 text-gray-600">{assessment.description}</p>
+        <div className="mb-8 text-lg font-bold text-blue-700 bg-blue-100 px-4 py-2 inline-block rounded-md shadow-sm">
           Time Left: {mins}:{secs.toString().padStart(2, "0")}
         </div>
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSubmit();
           }}
         >
-          <ul>
+          <ul className="space-y-6">
             {parseQuestions(assessment.questions).map((q, idx) => (
-              <li key={idx} className="mb-6">
-                <div className="font-semibold mb-2">
+              <li
+                key={idx}
+                className="p-6 rounded-xl bg-gray-50 shadow-sm border border-gray-200"
+              >
+                <div className="font-semibold mb-4 text-gray-800">
                   Q{idx + 1}: {q.question}
                 </div>
+
                 {q.type === "mcq" ? (
-                  <div>
+                  <div className="space-y-2">
                     {q.options.map((opt, i) => (
-                      <label key={i} className="block mb-1">
+                      <label
+                        key={i}
+                        className="flex items-center space-x-2 text-gray-700"
+                      >
                         <input
                           type="checkbox"
                           checked={answers[idx]?.includes(opt)}
                           onChange={() => handleMCQChange(idx, opt)}
-                          className="mr-2"
+                          className="accent-blue-600 w-4 h-4"
                         />
-                        {opt}
+                        <span>{opt}</span>
                       </label>
                     ))}
                   </div>
                 ) : q.type === "code" ? (
                   <textarea
                     rows={6}
-                    className="border border-gray-300 rounded px-3 py-2 w-full font-mono"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 font-mono focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     value={answers[idx] || ""}
                     onChange={(e) => handleChange(idx, e.target.value)}
                     placeholder="Write your code here..."
@@ -161,7 +171,7 @@ const AttemptAssessmentPage = () => {
                 ) : (
                   <input
                     type="text"
-                    className="border border-gray-300 rounded px-3 py-2 w-full"
+                    className="w-full rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                     value={answers[idx] || ""}
                     onChange={(e) => handleChange(idx, e.target.value)}
                     placeholder="Type your answer..."
@@ -170,17 +180,18 @@ const AttemptAssessmentPage = () => {
               </li>
             ))}
           </ul>
-          <div className="flex justify-end gap-3 mt-8">
+
+          <div className="flex justify-end gap-4 mt-10">
             <button
               type="button"
               onClick={() => navigate("/student/assessments")}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+              className="px-5 py-2.5 rounded-xl bg-gray-200 text-gray-800 hover:bg-gray-300 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-5 py-2.5 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 transition"
             >
               Submit Answers
             </button>

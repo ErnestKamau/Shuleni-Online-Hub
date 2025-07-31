@@ -25,6 +25,7 @@ import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
 import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
+import StudentResources from './pages/StudentResources';
 import Attendances from './pages/Attendance';
 import ChatPageWrapper from './pages/ChatPageWrapper';
 
@@ -203,6 +204,15 @@ export const AppRoutes = () => {
         <AttemptAssessmentPage />
       </ProtectedRoute>
       }
+      />
+
+      <Route
+        path="/student/classes/:classId/resources"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentResources />
+          </ProtectedRoute>
+        }
       />
 
 

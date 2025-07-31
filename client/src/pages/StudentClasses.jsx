@@ -3,12 +3,14 @@ import { FaChalkboardTeacher, FaUsers } from 'react-icons/fa';
 import { HiOutlineAcademicCap } from 'react-icons/hi';
 import StudentSidebar from '../components/common/StudentSidebar';
 import api from '../api/axios';
+import { useNavigate } from 'react-router-dom';
 
 const StudentClasses = () => {
   const [classes, setClasses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [school, setSchool] = useState(null);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchClasses = async () => {
@@ -26,6 +28,8 @@ const StudentClasses = () => {
     };
     fetchClasses();
   }, []);
+
+
 
   return (
     <div className="min-h-screen flex bg-gray-100 relative">
@@ -54,10 +58,14 @@ const StudentClasses = () => {
                   <div className="flex items-center gap-2">
                     <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm mr-2">{c.name}</span>
                   </div>
-                  <div className="mt-2 md:mt-0 text-sm text-gray-500 flex items-center gap-4">
+                  {/* <div className="mt-2 md:mt-0 text-sm text-gray-500 flex items-center gap-4">
                     <span className="flex items-center gap-1"><FaChalkboardTeacher className="text-gray-400" /> Teachers: <span className="italic">Coming soon</span></span>
                     <span className="flex items-center gap-1"><FaUsers className="text-gray-400" /> Classmates: <span className="italic">Coming soon</span></span>
-                  </div>
+                  </div> */}
+                  <button onClick={()=> navigate(`/student/classes/${c.id}/resources`)} className="mt-2 md:mt-0 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                    <FaChalkboardTeacher className="inline mr-2" />
+                    View Resources
+                  </button>
                 </li>
               ))}
             </ul>
