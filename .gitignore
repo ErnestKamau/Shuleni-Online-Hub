@@ -203,3 +203,6 @@ Thumbs.db
 __pycache__/
 *.pyc
 .env
+
+__pycache__/
+

@@ -32,7 +32,7 @@ class SchoolOwnerRegister(Resource):
             created_at=datetime.now(timezone.utc)
         )
         db.session.add(school)
-        db.session.flush()  # Get school ID
+        db.session.flush() 
         
       
         
@@ -449,7 +449,7 @@ class StudentDashboard(Resource):
             if record.status in attendance_summary:
                 attendance_summary[record.status] += 1
 
-        # group attendance by class
+        
         class_attendance = {}
         for record in attendance_records:
             cid = record.class_id

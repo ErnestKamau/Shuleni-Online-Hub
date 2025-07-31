@@ -38,10 +38,9 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
 
     try {
       const response = await axios.post('/admin/create-educator', cleanFormData, {
-        withCredentials: true, // needed if using cookies for JWT
+        withCredentials: true, 
       });
 
-      // Capture the data returned from the server
       const { message, school_email, temporary_password, teacher_id } = response.data;
       
       downloadOnboardingDoc({
@@ -51,8 +50,6 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
           `Full Name: ${formData.full_name}`,
           `School Email: ${school_email}`,
           `Temporary Password: ${temporary_password}`,
-          // `Teacher ID: ${teacher_id}`,
-          // `Class ID: ${formData.class_id || 'N/A'}`
         ]
       });
       
@@ -83,10 +80,7 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="relative z-10 flex min-h-screen">
-        {/* Sidebar */}
         <Sidebar />
-      
-
         <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
           <div className="text-center mb-6">
             <User className="mx-auto h-12 w-12 text-blue-500 mb-2" />
@@ -124,7 +118,6 @@ const CreateEducatorRegistration = ({ onSuccess }) => {
                 type: 'text',
                 placeholder: 'Enter class ID',
               },
-              // Only show school_id field when not pre-filled from query params
               ...(!schoolIdFromQuery ? [{
                 label: 'School ID (Required when adding from sidebar/dashboard)',
                 name: 'school_id',
