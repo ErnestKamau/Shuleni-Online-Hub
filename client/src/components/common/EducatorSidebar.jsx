@@ -12,8 +12,12 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 
-const EducatorSidebar = ({ educator,  schoolName = 'School', handleLogout }) => {
+const EducatorSidebar = ({ educator,  schoolName = 'School' }) => {
   const navigate = useNavigate();
+  const handleLogout = ()=>{
+    localStorage.removeItem("token");
+    navigate("/");
+  };
 
   return (
     <aside className="w-64 bg-white shadow-lg p-6 z-10 sticky top-0 h-screen hidden lg:block">
