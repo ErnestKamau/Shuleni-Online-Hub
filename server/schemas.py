@@ -3,15 +3,15 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models import User, Student, Teacher, School
 from extensions import db
 
-# schemas for database models
+
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User
         load_instance = True
         sqla_session = db.session
-        exclude = ['password_hash']  # Never expose password hash
+        exclude = ['_password_hash']  
     
-    # Add custom fields for nested relationships
+    
     student_profile = fields.Nested('StudentSchema', exclude=['user'], dump_only=True)
     teacher_profile = fields.Nested('TeacherSchema', exclude=['user'], dump_only=True)
     school = fields.Nested('SchoolSchema', exclude=['users'], dump_only=True)
@@ -42,7 +42,7 @@ class SchoolSchema(SQLAlchemyAutoSchema):
     
     users = fields.Nested('UserSchema', many=True, exclude=['school'], dump_only=True)
 
-# Custom validation schemas for API requests
+
 class SchoolOwnerRegistrationSchema(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
     email = fields.Email(required=True)
@@ -58,7 +58,6 @@ class StudentCreationSchema(Schema):
     
     @validates_schema
     def validate_admission_number(self, data, **kwargs):
-        # Custom validation for admission number format
         admission_num = data.get('admission_number')
         if admission_num and not admission_num.replace('-', '').replace('/', '').isalnum():
             raise ValidationError('Admission number can only contain letters, numbers, hyphens, and slashes')
@@ -71,7 +70,6 @@ class EducatorCreationSchema(Schema):
     
     @validates_schema
     def validate_school_email(self, data, **kwargs):
-        # Ensure school email follows proper format
         email = data.get('school_email')
         if email and not email.endswith('.edu') and '@' not in email:
             # You can add more specific validation based on your school email format
@@ -93,13 +91,13 @@ class UserProfileResponseSchema(Schema):
     school_id = fields.Integer()
     created_at = fields.DateTime()
     
-    # Conditional fields based on role
+    
     admission_number = fields.String(allow_none=True)
     grade = fields.String(allow_none=True)
     tsc_number = fields.String(allow_none=True)
     class_id = fields.Integer(allow_none=True)
 
-# Schema for updating user assignments (like assigning classes)
+
 class AssignClassSchema(Schema):
     user_ids = fields.List(fields.Integer(), required=True, validate=validate.Length(min=1))
     class_id = fields.Integer(required=True)
@@ -108,7 +106,7 @@ class BulkUserCreationSchema(Schema):
     users = fields.List(fields.Dict(), required=True, validate=validate.Length(min=1, max=100))
     user_type = fields.String(required=True, validate=validate.OneOf(['student', 'educator']))
 
-# Response schemas
+
 class AuthResponseSchema(Schema):
     token = fields.String()
     role = fields.String()

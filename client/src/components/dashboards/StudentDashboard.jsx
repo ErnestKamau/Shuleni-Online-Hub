@@ -63,11 +63,11 @@ const StudentDashboard = () => {
 
   const { student, school, classes, assessments, submissions, attendance_summary, class_attendance } = dashboard;
 
-  // Helper: Get pending assessments (no submission)
+  
   const submittedIds = new Set(submissions.map(s => s.assessment_id));
   const pendingAssessments = assessments.filter(a => !submittedIds.has(a.id));
 
-  // Helper: Upcoming deadlines (assessments not yet submitted, sorted by start_time)
+
   const upcoming = pendingAssessments
     .filter(a => a.start_time)
     .sort((a, b) => new Date(a.start_time) - new Date(b.start_time))
@@ -118,9 +118,9 @@ const StudentDashboard = () => {
         </nav>
       </aside>
 
-      {/* Main Content */}
+      
       <main className="flex-1 p-8 z-10">
-        {/* Header */}
+        
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Student Dashboard</h1>
           <p className="text-gray-600 text-lg">Welcome, <span className="font-medium">{student.full_name}</span></p>

@@ -266,7 +266,7 @@ const SchoolDetails = () => {
                     <p className="text-sm text-gray-500">Grade: {student.grade}</p>
                   </div>
                   <button 
-                    onClick={() => handleClassAssignment(null, student.id)}
+                    onClick={() => handleClassAssignment(student.id)}
                     className="bg-blue-500 text-white px-3 py-2 rounded-md text-sm hover:bg-blue-600 transition-colors flex items-center space-x-1"
                   >
                     <FaPlusCircle className="text-xs" />

@@ -15,7 +15,6 @@ class User(db.Model, SerializerMixin):
     role = db.Column(db.Enum('owner', 'educator', 'student', name='user_roles'), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    # New column
     first_login = db.Column(db.Boolean, default=True, nullable=True)
 
 

@@ -24,7 +24,6 @@ const ChangePassword = () => {
   const { user, logout } = useAuth();
 
   useEffect(() => {
-    // Check if this is a first login redirect
     setIsFirstLogin(searchParams.get('first_login') === 'true');
   }, [searchParams]);
 
@@ -32,7 +31,6 @@ const ChangePassword = () => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
-    // Clear errors when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -84,13 +82,11 @@ const ChangePassword = () => {
         new_password: formData.new_password
       });
 
-      // Show success message
+      
       alert('Password changed successfully!');
       
-      // Clear form
       setFormData({ old_password: '', new_password: '', confirm_password: '' });
       
-      // Redirect based on user role after successful password change
       if (user?.role === 'owner') {
         navigate('/owner-dashboard');
       } else if (user?.role === 'educator') {
@@ -120,13 +116,11 @@ const ChangePassword = () => {
 
   const handleCancel = () => {
     if (isFirstLogin) {
-      // For first login, user must change password - offer logout option
       if (confirm('You must change your password before accessing the system. Do you want to logout?')) {
         logout();
         navigate('/login');
       }
     } else {
-      // For normal password change, go back to profile
       navigate('/user-profile');
     }
   };

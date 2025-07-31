@@ -26,16 +26,13 @@ const CreateSchool = ({ onSuccess }) => {
 
     try {
       const response = await axios.post('/create-school', formData, {
-        withCredentials: true, // needed if using cookies for JWT
+        withCredentials: true,
       }); 
 
-      // Capture the data returned from the server
       const { message, school_id, school_name, description, address } = response.data;
       
-      // Display the important information to the user
       alert(`${message}\n\nSchool ID: ${school_id}\nSchool Name: ${school_name}\nDescription: ${description || 'N/A'}\nAddress: ${address || 'N/A'}`);
       
-      // You could also store this data in state if you want to display it in the UI
       console.log('School created:', {
         message,
         school_id,

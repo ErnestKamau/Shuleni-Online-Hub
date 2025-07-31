@@ -11,7 +11,7 @@ class SchoolStats(Resource):
     def get(self):
         current_user = get_jwt_identity()
         
-        # Only owners can view school stats
+        
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
             
@@ -20,12 +20,12 @@ class SchoolStats(Resource):
             
             school_id = current_user['school_id']
             
-            # Get counts
+            
             total_students = Student.query.filter_by(school_id=school_id).count()
             total_educators = Teacher.query.filter_by(school_id=school_id).count()
             total_users = User.query.filter_by(school_id=school_id).count()
             
-            # Get recent additions (last 30 days)
+            
             from datetime import datetime, timedelta
             thirty_days_ago = datetime.now(timezone.utc) - timedelta(days=30)
             

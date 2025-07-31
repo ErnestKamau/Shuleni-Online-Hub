@@ -8,7 +8,7 @@ import Sidebar from '../common/Sidebar';
 const OwnerDashboard = () => {
   const navigate = useNavigate();
   
-  // State management
+  
   const [dashboardData, setDashboardData] = useState({
     owner: { full_name: '', email: '' },
     schools: [],
@@ -23,7 +23,6 @@ const OwnerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch dashboard data
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
@@ -34,7 +33,7 @@ const OwnerDashboard = () => {
       } catch (err) {
         console.error('Error fetching dashboard data:', err);
         setError(err.message || 'Failed to load dashboard data');
-        // If token is invalid, redirect to login
+        
         if (err.message.includes('token') || err.message.includes('Unauthorized')) {
           localStorage.removeItem('token');
           navigate('/login');

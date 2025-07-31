@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from '../../api/axios';
 import { FaUserGraduate, FaChalkboardTeacher, FaPlusCircle, FaTrash, FaUsers, FaCheck, FaTimes, FaFileUpload, FaClipboardList, FaDownload } from "react-icons/fa";
-import Sidebar from '../common/Sidebar';
+import EducatorSidebar from "../common/EducatorSidebar";
 
-const ClassManagement = () => {
-  const { schoolId, classId } = useParams();
+
+
+const EducatorClassManagement = () => {
+  
+  const [schoolId , setSchoolId]= useState(null)
   const navigate = useNavigate();
+  const [classId , setClassId]= useState([])
 
   const [classData, setClassData] = useState(null);
   const [schoolData, setSchoolData] = useState({});
@@ -14,7 +18,6 @@ const ClassManagement = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedStudents, setSelectedStudents] = useState(new Set());
-  const [selectedTeachers, setSelectedTeachers] = useState(new Set());
   const [resourceTitle, setResourceTitle] = useState('');
   const [resourceFile, setResourceFile] = useState(null);
   const [assessmentTitle, setAssessmentTitle] = useState('');
@@ -23,12 +26,41 @@ const ClassManagement = () => {
   const [resources, setResources] = useState([]);
   const [assessments, setAssessments] = useState([]);
 
+
+
   useEffect(() => {
+  console.log("Fetching educator dashboard...");
+  api.get("/educator/dashboard")
+    .then((res) => {
+      console.log("Fetched educator dashboard:", res.data);
+      setSchoolId(res.data.schoolId);
+      setClassId(res?.data?.classIds)
+      setError(null);
+    })
+    .catch((err) => {
+      console.error("Dashboard fetch error:", err);
+      setError(err);
+      if (err.response?.status === 401 || err.message.includes("Unauthorized")) {
+        localStorage.removeItem("token");
+        handleLogout();
+      }
+    });
+}, []);
+
+useEffect(() => {
+  console.log("schoob:", schoolId)
+  if (schoolId) {
     fetchClassData();
-  }, [schoolId, classId]);
+  }
+}, [schoolId, classId]);
 
-  
 
+
+
+  const handleLogout = ()=>{
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
 
   const fetchClassData = async () => {
@@ -37,15 +69,15 @@ const ClassManagement = () => {
       const schoolRes = await api.get(`/schools/${schoolId}/details`);
       setSchoolData(schoolRes.data);
 
-      // current class
+      
       const currentClass = schoolRes.data.classes.find(c => c.id === parseInt(classId));
       setClassData(currentClass);
 
-      // resources for this class
+      
       const resRes = await api.get(`/classes/${classId}/resources`);
       setResources(resRes.data.resources || []);
 
-      // assessments for this class
+      
       const assRes = await api.get(`/classes/${classId}/assessments`);
       setAssessments(assRes.data.assessments || []);
 
@@ -67,7 +99,6 @@ const ClassManagement = () => {
       });
       setSuccessMessage(`Assigned ${userIds.size} ${role}s`);
       setSelectedStudents(new Set());
-      setSelectedTeachers(new Set());
       await fetchClassData();
     } catch (err) {
       setError(err.message || 'Failed to assign users');
@@ -82,7 +113,6 @@ const ClassManagement = () => {
       });
       setSuccessMessage('User removed from class');
       await fetchClassData();
-      console.log('User removed:', userId);
     } catch (err) {
       setError(err.message || 'Failed to remove user');
     }
@@ -135,16 +165,13 @@ const ClassManagement = () => {
     }
   };
 
+  
   const toggleStudentSelection = (studentId) => {
     const newSelected = new Set(selectedStudents);
     newSelected.has(studentId) ? newSelected.delete(studentId) : newSelected.add(studentId);
     setSelectedStudents(newSelected);
   };
-  const toggleTeacherSelection = (teacherId) => {
-    const newSelected = new Set(selectedTeachers);
-    newSelected.has(teacherId) ? newSelected.delete(teacherId) : newSelected.add(teacherId);
-    setSelectedTeachers(newSelected);
-  };
+
 
   if (loading) {
     return (
@@ -170,8 +197,9 @@ const ClassManagement = () => {
           pointerEvents: "none",
         }}
       />
+      <EducatorSidebar/>
 
-      <Sidebar />
+      
 
       <main className="flex-1 p-8 relative z-10">
         <div className="max-w-6xl mx-auto">
@@ -189,8 +217,15 @@ const ClassManagement = () => {
               onClick={() => navigate(`/school/${schoolId}/details`)}
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
             >
-              Back to School
+              Back to Class
             </button>
+            <button 
+              onClick={() => navigate(`/educator/class/${classId}/chat`)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors ml-4"
+            >
+              Open Class Chat
+            </button>
+
           </header>
 
           {/* Success/Error Messages */}
@@ -242,29 +277,7 @@ const ClassManagement = () => {
                 ))}
               </div>
             </section>
-            {/* Teachers */}
-            <section className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center">
-                <FaChalkboardTeacher className="text-green-500 mr-2" />
-                Teachers in {classData?.name} ({classData?.teachers?.length || 0})
-              </h3>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {classData?.teachers?.map(teacher => (
-                  <div key={teacher.id} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <div>
-                      <p className="font-medium">{teacher.full_name}</p>
-                      <p className="text-sm text-gray-500">{teacher.tsc_number}</p>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveUser(teacher.id)}
-                      className="text-red-500 hover:text-red-700 p-1"
-                    >
-                      <FaTimes />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
+            
           </div>
 
           {/* Assignment Section */}
@@ -304,39 +317,7 @@ const ClassManagement = () => {
                 ))}
               </div>
             </section>
-            {/* Unassigned Teachers */}
-            <section className="bg-white rounded-lg shadow p-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-semibold text-gray-800 flex items-center">
-                  <FaChalkboardTeacher className="text-green-500 mr-2" />
-                  Unassigned Teachers ({schoolData.unassigned_teachers.length})
-                </h3>
-                {selectedTeachers.size > 0 && (
-                  <button
-                    onClick={() => handleAssignUsers(selectedTeachers, 'educator')}
-                    className="bg-green-600 text-white px-3 py-1 rounded-md text-sm hover:bg-green-700"
-                  >
-                    Assign Selected ({selectedTeachers.size})
-                  </button>
-                )}
-              </div>
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {schoolData.unassigned_teachers.map(teacher => (
-                  <div key={teacher.id} className="flex items-center p-2 bg-gray-50 rounded hover:bg-gray-100">
-                    <input
-                      type="checkbox"
-                      checked={selectedTeachers.has(teacher.id)}
-                      onChange={() => toggleTeacherSelection(teacher.id)}
-                      className="mr-3"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium">{teacher.full_name}</p>
-                      <p className="text-sm text-gray-500">TSC: {teacher.tsc_number}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+            
           </div>
 
           {/* Resources Section */}
@@ -417,6 +398,9 @@ const ClassManagement = () => {
                 <li key={a.id} className="flex justify-between items-center py-2 border-b">
                   <span>{a.title} ({a.type})</span>
                   <span className="text-xs text-gray-500">{a.created_at ? new Date(a.created_at).toLocaleString() : ''}</span>
+                  <a href={`/classes/${classId}/assessments/${a.id}/submissions`} className="text-blue-600 hover:underline">
+                    <FaUsers className="inline mr-1" /> View Submissions
+                  </a>
                 </li>
               ))}
             </ul>
@@ -430,6 +414,7 @@ const ClassManagement = () => {
             </h3>
             <button
               onClick={() => {
+                
                 const headers = ['Full Name', 'Admission/TSC', 'Role'];
                 const rows = [
                   ...(classData?.students || []).map(s => [s.full_name, s.admission_number, 'Student']),
@@ -455,4 +440,4 @@ const ClassManagement = () => {
   );
 };
 
-export default ClassManagement;
+export default EducatorClassManagement;
