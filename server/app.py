@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, make_response
+from flask import Flask, make_response, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -139,6 +139,10 @@ class ValidatedChangePassword(ChangePassword):
 class Home(Resource):
     def get(self):
         return make_response({"status": "healthy", "message": "Shuleni API is running"}, 200)
+    
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory('uploads', filename)
 
 
 api.add_resource(Home, '/api/home', endpoint='home')

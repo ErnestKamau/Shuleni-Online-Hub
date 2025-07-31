@@ -24,6 +24,7 @@ import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
 import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
+import StudentResources from './pages/StudentResources';
 
 export const AppRoutes = () => {
   const { loading } = useAuth();
@@ -172,6 +173,15 @@ export const AppRoutes = () => {
         <AttemptAssessmentPage />
       </ProtectedRoute>
       }
+      />
+
+      <Route
+        path="/student/classes/:classId/resources"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentResources />
+          </ProtectedRoute>
+        }
       />
 
 
