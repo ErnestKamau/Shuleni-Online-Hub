@@ -278,27 +278,59 @@ class AttendanceById(Resource):
         return response
     
     @jwt_required()
-    def patch(self,id):
-        current_user=json.loads(get_jwt_identity())
+    def patch(self, id):
+        current_user = json.loads(get_jwt_identity())
         if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
-        
+
         data = request.get_json()
+
         patch_attendance = Attendance.query.options(
             db.joinedload(Attendance.student)
-        ).filter(Attendance.id==id).first()
-        if not patch_attendance:
-            return make_response({"error": "Attendance record not found"},404)
-        for attr, value in data.items():
-            setattr(patch_attendance,attr, value)
-        db.session.add(patch_attendance)
-        db.session.commit()
+        ).filter(Attendance.id == id).first()
 
-        response = make_response(
-            attendance_schema.dump(patch_attendance),
-            200,
-        )
-        return response
+        if not patch_attendance:
+            return make_response({"error": "Attendance record not found"}, 404)
+
+        # Normalize status to lowercase
+        if "status" in data:
+            data["status"] = data["status"].lower()
+            if data["status"] not in ["present", "absent", "late", "excused"]:
+                return make_response({"error": "Invalid status value"}, 400)
+
+        try:
+            for attr, value in data.items():
+                setattr(patch_attendance, attr, value)
+
+            db.session.commit()
+            return make_response(attendance_schema.dump(patch_attendance), 200)
+        except Exception as e:
+            print("PATCH error:", str(e))
+            return make_response({"error": "Failed to update record"}, 500)
+
+    
+    # @jwt_required()
+    # def patch(self,id):
+    #     current_user=json.loads(get_jwt_identity())
+    #     if current_user["role"] not in ["owner", "educator"]:
+    #         return {"error": "unauthorised"}, 403
+        
+    #     data = request.get_json()
+    #     patch_attendance = Attendance.query.options(
+    #         db.joinedload(Attendance.student)
+    #     ).filter(Attendance.id==id).first()
+    #     if not patch_attendance:
+    #         return make_response({"error": "Attendance record not found"},404)
+    #     for attr, value in data.items():
+    #         setattr(patch_attendance,attr, value)
+    #     db.session.add(patch_attendance)
+    #     db.session.commit()
+
+    #     response = make_response(
+    #         attendance_schema.dump(patch_attendance),
+    #         200,
+    #     )
+    #     return response
     @jwt_required()
     def delete(self,id):
         current_user=json.loads(get_jwt_identity())

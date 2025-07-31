@@ -55,7 +55,7 @@ export const AppRoutes = () => {
       />
 
       <Route element={<PublicLayout />}>
-        <Route path="/attendances" element={<Attendances />} />
+        {/*<Route path="/attendances" element={<Attendances />} />*/}
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -70,6 +70,13 @@ export const AppRoutes = () => {
         }
       />
 
+      <Route path="/educator-dashboard/attendance" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <AttendancePage />
+        </ProtectedRoute>    
+        }
+      />
+
       
 
        <Route path="/educator-dashboard/class" element={
@@ -79,13 +86,7 @@ export const AppRoutes = () => {
         }
       />
 
-      <Route path="/attendances" element={
-        <ProtectedRoute>
-          <Attendances />
-        </ProtectedRoute>
-        
-      } 
-      />
+      
 
       <Route
         path="/classes/:classId/assessments/:assessmentId/submissions"
