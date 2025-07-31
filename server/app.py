@@ -15,7 +15,11 @@ from datetime import timedelta
 from flask_jwt_extended import jwt_required
 from extensions import db, ma, jwt, bcrypt, cors
 
-app = Flask(__name__)
+app = Flask(__name__,
+    static_url_path='',
+    static_folder='../client/dist',
+    template_folder='../client/dist'
+            )
 app.config.from_object(Config)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
