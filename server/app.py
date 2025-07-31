@@ -38,10 +38,9 @@ from routes.owner_dashboard import OwnerDashboard
 from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
-from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
+from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments, AssessmentSubmissions, SubmissionByID
 from routes.educator_dashboard import EducatorDashboard
 from routes.chat import ChatListResource, ChatResource, ChatExportResource
-# Register real-time chat socket handlers
 from routes import chat_socket
 from routes.assessment_routes import AssessmentById
 from models import *
@@ -195,6 +194,8 @@ api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments", en
 api.add_resource(AssessmentById, "/api/assessments/<int:id>", endpoint="assessment_by_id")
 print(" EducatorDashboard route is being registered")
 api.add_resource(EducatorDashboard, '/api/educator/dashboard')
+api.add_resource(AssessmentSubmissions, "/api/classes/<int:class_id>/assessments/<int:assessment_id>/submissions")
+api.add_resource(SubmissionByID, "/api/submissions/<int:id>")
 
 
 api.add_resource(ChatListResource, "/api/chats", endpoint="chatlistresource")

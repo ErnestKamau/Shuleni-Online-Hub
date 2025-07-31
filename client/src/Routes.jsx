@@ -28,6 +28,7 @@ import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
 import StudentResources from './pages/StudentResources';
 import Attendances from './pages/Attendance';
 import ChatPageWrapper from './pages/ChatPageWrapper';
+import ClassAssessmentSubmissions from './pages/ClassAssessmentSubmissions';
 
 
 export const AppRoutes = () => {
@@ -56,11 +57,7 @@ export const AppRoutes = () => {
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
-
         
-        
-
-        {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
       {/*mwalimu routes*/}
       <Route path="/educator-dashboard" element={
@@ -83,6 +80,15 @@ export const AppRoutes = () => {
         </ProtectedRoute>
         
       } 
+      />
+
+      <Route
+        path="/classes/:classId/assessments/:assessmentId/submissions"
+        element={
+          <ProtectedRoute allowedRoles={['educator']}>
+            <ClassAssessmentSubmissions />
+          </ProtectedRoute>
+        }
       />
 
       {/* Owner-only routes */}
@@ -142,18 +148,9 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      
 
 
-
-      {/* Educator-only routes */}
-      <Route
-        path="/educator-dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['educator']}>
-            <EducatorDashboard />
-          </ProtectedRoute>
-        }
-      />
 
       {/* Student-only routes */}
       <Route

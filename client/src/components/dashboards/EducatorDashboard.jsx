@@ -1,23 +1,15 @@
 import React,{useState, useEffect} from "react";
-import { useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-
+import EducatorSidebar from "../common/EducatorSidebar";
 import axios from "../../api/axios";
 import { useNavigate } from "react-router-dom";
-
-
-
 import {FaChalkboardTeacher,FaUpload,FaUsers,FaBook,FaCalendarCheck, FaEnvelope,FaUser,FaSignOutAlt,} from "react-icons/fa";
 
 const EducatorDashboard = () => {
   const [educatorDashboardData, setEducatorDashboardData] = useState([]);
-  const [educatorName, setEducatorName] = useState([]);
-  const [schoolName,setSchoolName] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading]= useState(true);
   const navigate = useNavigate()
   const [refreshPage, setRefreshPage]= useState(false)
-  const schoolLogo = "/logo.png";
 
 
   useEffect(()=>{
@@ -73,32 +65,8 @@ const EducatorDashboard = () => {
       />
 
       {/* Sidebar */}
-      <aside className="w-64 bg-white shadow-lg p-6 z-10 sticky top-0 h-screen hidden lg:block">
-        <div className="flex items-center space-x-3 mb-10">
-          <img src={educator?.school?.logo} alt="School Logo" className="w-12 h-12" />
-          <span className="text-xl font-bold text-gray-800">{educator?.school?.name}</span>
-        </div>
-        <nav className="space-y-4">
-          {[
-            { label: "Dashboard", icon: <FaChalkboardTeacher />, route: "/educator-dashboard" },
-            { label: "My Classes", icon: <FaBook /> , route: "/educator-dashboard/class"},
-            { label: "Attendance", icon: <FaCalendarCheck /> , route: "/educator-dashboard/attendance"},
-            { label: "Upload Materials", icon: <FaUpload /> , route: "/educator-dashboard/upload" },
-            { label: "Messages", icon: <FaEnvelope /> , route: "/educator-dashboard/messages"},
-            { label: "Profile", icon: <FaUser />, route: "/educator-dashboard/profile" },
-            { label: "Logout", icon: <FaSignOutAlt /> , onClick: handleLogout},
-          ].map(({ label, icon, route , onClick}) => (
-            <button
-              key={label}
-              onClick={()=>( onClick ?onClick():navigate(route))}
-              className="flex items-center w-full px-4 py-2 text-left rounded-lg transition -700 hover:bg-gray-100"
-              
-            >
-              <span className="mr-3">{icon}</span> {label}
-            </button>
-          ))}
-        </nav>
-      </aside>
+      <EducatorSidebar />
+    
 
       <main className="flex-1 p-8 z-10">
         <div className="flex justify-between items-center mb-8">
