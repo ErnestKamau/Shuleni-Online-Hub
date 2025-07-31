@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 from flask import Flask, make_response, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
@@ -19,7 +19,7 @@ app = Flask(__name__)
 app.config.from_object(Config)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Initialize extensions with app
+
 db.init_app(app)
 ma.init_app(app)
 jwt.init_app(app)
@@ -155,18 +155,6 @@ def uploaded_file(filename):
 api.add_resource(Home, '/api/home', endpoint='home')
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
-
-
-# api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
-# api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
-# api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
-# api.add_resource(ValidatedLogin, '/api/login')
-# api.add_resource(ValidatedChangePassword, '/api/change-password')
-# api.add_resource(UserProfile, '/api/profile')
-# api.add_resource(SchoolStats, '/api/admin/stats')
-# # api.add_resource(AssignUserToClass, '/api/admin/assign-class')
-
-
 api.add_resource(Login, '/api/login', endpoint='login')
 api.add_resource(SchoolOwnerRegister, '/api/register/owner', endpoint='register_owner') 
 api.add_resource(AdminCreateStudent, '/api/admin/create-student', endpoint='create_student')

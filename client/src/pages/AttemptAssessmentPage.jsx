@@ -45,7 +45,7 @@ const AttemptAssessmentPage = () => {
     fetchAssessment();
   }, [assessmentId, navigate]);
 
-  
+ 
   useEffect(() => {
     if (!timer) return;
     timerRef.current = setInterval(() => {
@@ -60,7 +60,6 @@ const AttemptAssessmentPage = () => {
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [timer]);
-
 
   useEffect(() => {
     if (assessment) {

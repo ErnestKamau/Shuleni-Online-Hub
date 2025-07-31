@@ -13,6 +13,9 @@ import json
 
 
 
+
+
+
 migrate = Migrate(app,db)
 
 class AttendanceSchema(ma.SQLAlchemySchema):
@@ -69,11 +72,8 @@ class Index(Resource):
 
 
 class Attendances(Resource):
-    #@jwt_required()
     def get(self):
-        # current_user=json.loads(get_jwt_identity())
-        # if current_user["role"] not in ["owner", "educator"]:
-        #     return {"error": "unauthorised"}, 403
+
         try:
             class_id = request.args.get("class_id", type=int)
             student_id = request.args.get("student_id", type=int)
@@ -319,5 +319,4 @@ class AttendanceById(Resource):
         return response
     
 
-#api.add_resource(AttendanceById ,"/attendances/<int:id>" )
-    
+

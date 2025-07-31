@@ -60,7 +60,6 @@ const CreateSchool = ({ onSuccess }) => {
   return (
     <div className="relative min-h-screen overflow-hidden">
       <div className="relative z-10 flex min-h-screen">
-        {/* Sidebar */}
         <Sidebar />
       
 

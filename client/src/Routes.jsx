@@ -24,9 +24,11 @@ import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
+import AttendancePage from './pages/EducatorAttendance';
 import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
 import StudentResources from './pages/StudentResources';
-import Attendances from './pages/Attendance';
+
+
 import ChatPageWrapper from './pages/ChatPageWrapper';
 import ClassAssessmentSubmissions from './pages/ClassAssessmentSubmissions';
 
