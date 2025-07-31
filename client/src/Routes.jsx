@@ -211,6 +211,14 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/educator/class/${c.id}/chat"
+        element={
+          <ProtectedRoute allowedRoles={['student', 'educator']}>
+            <ChatPageWrapper />
+          </ProtectedRoute>
+        }
+      />
 
 
 

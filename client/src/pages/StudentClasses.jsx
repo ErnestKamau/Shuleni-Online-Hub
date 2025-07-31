@@ -66,6 +66,10 @@ const StudentClasses = () => {
                     <FaChalkboardTeacher className="inline mr-2" />
                     View Resources
                   </button>
+                  <button onClick={()=> navigate(`/educator/class/${c.id}/chat`)} className="mt-2 md:mt-0 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors">
+                    <FaChalkboardTeacher className="inline mr-2" />
+                    CLass Chat
+                  </button>
                 </li>
               ))}
             </ul>
