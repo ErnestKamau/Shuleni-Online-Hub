@@ -37,7 +37,7 @@ const EducatorDashboard = () => {
 
   const handleLogout = ()=>{
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
 
