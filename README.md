@@ -7,9 +7,9 @@
 
 
 #LOGIN Credentials
-1. ##mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com pass=123456
-2. ##studentlogins credentials - std adm no= 5555 pass=123456
-3. ##logins credentials - mwalimu =will@gmail.compass=abcd
+1. ## mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com   password=123456
+2. ## studentlogins credentials - std admno= 5555         pass=123456
+3. ## logins credentials - mwalimu =will@gmail.com      pass=abcd
 
 
 
