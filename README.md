@@ -6,6 +6,12 @@
 5. [Ruth Kiptoo](https://github.com/Jemeli-prog)
 
 
+#LOGIN Credentials
+##mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com pass=123456
+##studentlogins credentials - std adm no= 5555 pass=123456
+##logins credentials - mwalimu =will@gmail.compass=abcd
+
+
 
 #  Shuleni – Kenya High School Management System (KHSMS)
 
