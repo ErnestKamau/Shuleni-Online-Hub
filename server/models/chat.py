@@ -38,9 +38,3 @@ class Chat(db.Model, SerializerMixin):
 
     
 
-    #message_type = db.Column(db.String, default='text')
-    #is_read = db.Column(db.Boolean, default=False)
-    #receiver = db.relationship('User', foreign_keys=[receiver_id], back_populates='received_messages')
-    #'-receiver.received_messages'
-    #sender_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    #receiver_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)

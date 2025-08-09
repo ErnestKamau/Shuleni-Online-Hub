@@ -4,7 +4,7 @@ import * as yup from "yup";
 import axios from '../api/axios';
 import { useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { School } from 'lucide-react'; // Importing an icon
+import { School } from 'lucide-react'; 
 import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/common/Sidebar";
 
@@ -45,9 +45,8 @@ const ClassSection = () => {
         <div className="relative min-h-screen overflow-hidden">
             <div className="relative z-10 flex min-h-screen">
 
-                {/* Sidebar for navigation */}
+                
                 <Sidebar />
-                {/* Main content area */}
                 <div className="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
                     <div className="text-center mb-6">
                         <School className="mx-auto h-12 w-12 text-blue-500 mb-2" />

@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-from flask import Flask, make_response, send_from_directory
+
+from flask import Flask, make_response, send_from_directory,jsonify,request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -15,11 +15,16 @@ from datetime import timedelta
 from flask_jwt_extended import jwt_required
 from extensions import db, ma, jwt, bcrypt, cors
 
-app = Flask(__name__)
+app = Flask(__name__,
+    static_url_path='',
+    static_folder='../client/dist',
+    template_folder='../client/dist'
+            )
 app.config.from_object(Config)
 socketio = SocketIO(app, cors_allowed_origins="*")
 
-# Initialize extensions with app
+
+
 db.init_app(app)
 ma.init_app(app)
 jwt.init_app(app)
@@ -151,22 +156,16 @@ class Home(Resource):
 def uploaded_file(filename):
     return send_from_directory('uploads', filename)
 
+@app.errorhandler(404)
+def not_found(e):
+    if request.path.startswith('/api'):
+        return jsonify({'error': 'Not found'}), 404
+    return render_template("index.html")
+
 
 api.add_resource(Home, '/api/home', endpoint='home')
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
-
-
-# api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
-# api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
-# api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
-# api.add_resource(ValidatedLogin, '/api/login')
-# api.add_resource(ValidatedChangePassword, '/api/change-password')
-# api.add_resource(UserProfile, '/api/profile')
-# api.add_resource(SchoolStats, '/api/admin/stats')
-# # api.add_resource(AssignUserToClass, '/api/admin/assign-class')
-
-
 api.add_resource(Login, '/api/login', endpoint='login')
 api.add_resource(SchoolOwnerRegister, '/api/register/owner', endpoint='register_owner') 
 api.add_resource(AdminCreateStudent, '/api/admin/create-student', endpoint='create_student')

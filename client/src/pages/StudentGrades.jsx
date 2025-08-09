@@ -61,7 +61,7 @@ const StudentGrades = () => {
     Object.entries(typeScores).map(([type, scores]) => [type, (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(2)])
   );
 
-  // Download CSV handler
+  
   const handleDownloadCSV = () => {
     const headers = ['Title', 'Type', 'Class', 'Score', 'Feedback'];
     const rows = assessments.map(a => {

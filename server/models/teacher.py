@@ -16,7 +16,6 @@ class Teacher(db.Model, SerializerMixin):
 
     
     user = db.relationship('User', backref='teacher_profile', uselist=False)
-    #teachers = db.relationship("User", secondary="class_members", back_populates="teaching_classes")
 
     school = db.relationship("School", back_populates="teachers")  
 

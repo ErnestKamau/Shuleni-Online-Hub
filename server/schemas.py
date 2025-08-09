@@ -42,7 +42,6 @@ class SchoolSchema(SQLAlchemyAutoSchema):
     
     users = fields.Nested('UserSchema', many=True, exclude=['school'], dump_only=True)
 
-
 class SchoolOwnerRegistrationSchema(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
     email = fields.Email(required=True)
@@ -72,7 +71,6 @@ class EducatorCreationSchema(Schema):
     def validate_school_email(self, data, **kwargs):
         email = data.get('school_email')
         if email and not email.endswith('.edu') and '@' not in email:
-            # You can add more specific validation based on your school email format
             pass
 
 class LoginSchema(Schema):
@@ -115,11 +113,11 @@ class AuthResponseSchema(Schema):
     school_id = fields.Integer()
     email = fields.String(allow_none=True)
     admission_number = fields.String(allow_none=True)
-    first_login = fields.Boolean()  # Add first_login field
+    first_login = fields.Boolean()  
 
 class UserCreationResponseSchema(Schema):
     message = fields.String()
     temporary_password = fields.String()
     user_id = fields.Integer()
-    admission_number = fields.String(allow_none=True)  # For students
-    school_email = fields.String(allow_none=True)  # For educators
+    admission_number = fields.String(allow_none=True) 
+    school_email = fields.String(allow_none=True)  
