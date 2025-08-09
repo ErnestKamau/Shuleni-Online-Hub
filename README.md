@@ -6,6 +6,23 @@
 5. [Ruth Kiptoo](https://github.com/Jemeli-prog)
 
 ---
+
+
+#LOGIN Credentials
+1. ## mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com   password=123456
+2. ## studentlogins credentials - std admno= 5555         pass=123456
+3. ## logins credentials - mwalimu =will@gmail.com      pass=abcd
+
+
+
+#  Shuleni – Kenya High School Management System (KHSMS)
+
+A full-stack school management platform built with **React**, **Flask**, **TailwindCSS**, and **PostgreSQL**. Shuleni empowers Kenyan secondary schools to manage students, educators, attendance, communication, and more — with future CBC-readiness in mind.
+
+>  Live Demo: [https://shuleni-zt8u.onrender.com](https://shuleni-zt8u.onrender.com)
+
+---
+
 ### Project Summary
 
 Shuleni is a full-stack school management platform that brings the entire physical school experience online. It enables school owners to create and manage schools, assign students and educators to classes, upload resources, conduct assessments, and track attendance—all through a secure, role-based web interface.
@@ -33,21 +50,6 @@ The system supports **file uploads** (such as class resources and assignments), 
 **Database migrations** are managed with **Flask-Migrate**, enabling the team to evolve the database schema safely and incrementally as the application grows.
 
 Together, these technologies and design patterns provide a secure, maintainable, and scalable foundation for digital education management, supporting real-world workflows such as onboarding, resource sharing, assessment, grading, and analytics within a modern web environment.
-
-
-
-#LOGIN Credentials
-1. ## mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com   password=123456
-2. ## studentlogins credentials - std admno= 5555         pass=123456
-3. ## logins credentials - mwalimu =will@gmail.com      pass=abcd
-
-
-
-#  Shuleni – Kenya High School Management System (KHSMS)
-
-A full-stack school management platform built with **React**, **Flask**, **TailwindCSS**, and **PostgreSQL**. Shuleni empowers Kenyan secondary schools to manage students, educators, attendance, communication, and more — with future CBC-readiness in mind.
-
->  Live Demo: [https://shuleni-zt8u.onrender.com](https://shuleni-zt8u.onrender.com)
 
 ---
 
