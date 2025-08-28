@@ -37,9 +37,9 @@ Together, these technologies and design patterns provide a secure, maintainable,
 
 
 #LOGIN Credentials
-1. ## mwalimu logins credentials - mwalimu = samuelsimion1990@gmail.com   password=123456
-2. ## studentlogins credentials - std admno= 5555         pass=123456
-3. ## logins credentials - mwalimu =will@gmail.com      pass=abcd
+1. ## TEACHERS logins credentials - EMAIL=samuelsimion1990@gmail.com   password=123456
+2. ## STUDENT logins credentials - admno= 5555    password=123456
+3. ## SCHOOLOWNER credentials - will@gmail.com   password=abcd
 
 
 
