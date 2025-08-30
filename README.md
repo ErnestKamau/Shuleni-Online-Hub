@@ -47,7 +47,7 @@ Together, these technologies and design patterns provide a secure, maintainable,
 
 A full-stack school management platform built with **React**, **Flask**, **TailwindCSS**, and **PostgreSQL**. Shuleni empowers Kenyan secondary schools to manage students, educators, attendance, communication, and more — with future CBC-readiness in mind.
 
->  Live Demo: [https://shuleni-zt8u.onrender.com](https://shuleni-zt8u.onrender.com)
+>  Live Demo: [https://shuleni-online-hub.onrender.com/](https://shuleni-online-hub.onrender.com/)
 
 ---
 
@@ -99,7 +99,7 @@ A full-stack school management platform built with **React**, **Flask**, **Tailw
 ### 1. Clone the repo
 
 bash
-git clone https://github.com/Samsimion/Shuleni.git
+git clone https://github.com/ErnestKamau/Shuleni-Online-Hub.git
 cd Shuleni
 
 
@@ -149,18 +149,18 @@ Pull requests are not welcome! For major changes, open an issue first to discuss
 
 ##  License
 
-MIT © [Samuel S. Simon](https://github.com/Samsimion)
+MIT © [ErnestKamau](https://github.com/ErnestKamau)
 
 ---
 
 ## Contact
 
-* GitHub: [@Samsimion](https://github.com/Samsimion)
+* GitHub: [@ErnestKamau](https://github.com/ErnestKamau)
 
 
 ---
 
 ##  Live App
 
- **[Visit Live Site](https://shuleni-zt8u.onrender.com)**
+ **[Visit Live Site](https://shuleni-online-hub.onrender.com/)**
 
